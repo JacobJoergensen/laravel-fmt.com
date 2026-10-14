@@ -1,0 +1,154 @@
+---
+title: Configuration
+description: How Laravel Fmt finds its config file, and every key it accepts.
+group: Configuration
+order: 20
+---
+
+A config file is optional. Run `init` from your project root to write one with your detected
+settings:
+
+```sh
+vendor/bin/laravel-fmt init
+```
+
+In a Laravel app, only the `laravel-fmt.json` next to `artisan` is read. One in a subfolder is
+ignored with a warning. Outside Laravel, the nearest `laravel-fmt.json` above the file is used.
+
+## Defaults
+
+```json title="laravel-fmt.json"
+{
+  "$schema": "https://raw.githubusercontent.com/JacobJoergensen/laravel-fmt/main/schema/v1.json",
+  "ignore": [
+    "vendor/",
+    "node_modules/",
+    "storage/**",
+    "bootstrap/cache/**",
+    "composer.lock",
+    "package-lock.json",
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    "_ide_helper*.php"
+  ],
+  "printWidth": 120,
+  "indentStyle": "space",
+  "indentWidth": 4,
+  "endOfLine": "lf",
+  "quoteStyle": "auto",
+  "php": {
+    "removeTrailingCloseTag": true,
+    "sortUses": true,
+    "expandUseGroups": true,
+    "functionBraceStyle": "next-line",
+    "methodBraceStyle": "next-line",
+    "classBraceStyle": "next-line",
+    "anonymousClassBraceStyle": "next-line",
+    "controlBraceStyle": "same-line",
+    "concatSpace": false,
+    "notOperatorSpace": true,
+    "closureFnSpace": true,
+    "alignFatArrow": false,
+    "shortArray": true,
+    "blankLineBeforeStatements": ["continue", "return"],
+    "heredocIndentation": "none",
+    "importOrder": ["const", "class", "function"]
+  },
+  "markdown": {
+    "proseWrap": "preserve"
+  },
+  "tailwind": {
+    "stylesheet": ""
+  }
+}
+```
+
+## Top-level keys
+
+| Key                   | Default      | Values                                                                                   |
+| --------------------- | ------------ | ---------------------------------------------------------------------------------------- |
+| `$schema`             | schema URL   | Editor autocomplete and validation.                                                      |
+| `ignore`              | see above    | Gitignore-style globs. See [Ignoring files](/docs/ignoring-files).                       |
+| `printWidth`          | `120`        | Any integer `>= 1`                                                                       |
+| `indentStyle`         | `"space"`    | `"space"`, `"tab"`                                                                       |
+| `indentWidth`         | `4`          | Any integer `>= 1`                                                                       |
+| `endOfLine`           | `"lf"`       | `"lf"`, `"crlf"`, `"auto"`. `auto` keeps CRLF if the file has it, else LF                |
+| `quoteStyle`          | `"auto"`     | `"auto"`, `"single"`, `"double"`. `auto` is single in PHP, double in CSS/HTML/XML        |
+| `php`                 | see below    | See [PHP options](#php-options).                                                         |
+| `blade`               | none         | See [Blade options](#blade-options).                                                     |
+| `markdown.proseWrap`  | `"preserve"` | `"always"`, `"never"`, `"preserve"`                                                      |
+| `tailwind.stylesheet` | unset        | A path or list of paths to your Tailwind v4 stylesheets. See [Tailwind](/docs/tailwind). |
+
+JSON and YAML always use spaces. They indent 2, or 4 for `composer.json`, unless `indentWidth` is set
+in `laravel-fmt.json`, `.editorconfig`, or Prettier.
+
+## PHP options
+
+### Layout
+
+| Key                        | Default       | Values                                             |
+| -------------------------- | ------------- | -------------------------------------------------- |
+| `functionBraceStyle`       | `"next-line"` | `"same-line"`, `"next-line"`, `"always-next-line"` |
+| `methodBraceStyle`         | `"next-line"` | `"same-line"`, `"next-line"`, `"always-next-line"` |
+| `classBraceStyle`          | `"next-line"` | `"same-line"`, `"next-line"`, `"always-next-line"` |
+| `anonymousClassBraceStyle` | `"next-line"` | `"same-line"`, `"next-line"`, `"always-next-line"` |
+| `controlBraceStyle`        | `"same-line"` | `"same-line"`, `"next-line"`, `"always-next-line"` |
+
+### Spacing
+
+| Key                | Default | Effect                                        |
+| ------------------ | ------- | --------------------------------------------- |
+| `concatSpace`      | `false` | Spaces around the `.` concatenation operator. |
+| `notOperatorSpace` | `true`  | A space after `!`.                            |
+| `closureFnSpace`   | `true`  | A space between `fn` and its parameter list.  |
+| `alignFatArrow`    | `false` | Align `=>` in arrays and `match` arms.        |
+
+### Statements
+
+| Key                         | Default                  | Effect                                                |
+| --------------------------- | ------------------------ | ----------------------------------------------------- |
+| `blankLineBeforeStatements` | `["continue", "return"]` | Keywords that get a blank line before them.           |
+| `shortArray`                | `true`                   | Use `[]` instead of `array()`.                        |
+| `removeTrailingCloseTag`    | `true`                   | Drop the trailing `?>` at the end of a PHP-only file. |
+
+`blankLineBeforeStatements` accepts `break`, `continue`, `declare`, `do`, `for`, `foreach`, `goto`,
+`if`, `include`, `include_once`, `require`, `require_once`, `return`, `switch`, `throw`, `try`,
+`while`, `yield`, `yield_from`.
+
+### Imports
+
+| Key               | Default                          | Values                                                |
+| ----------------- | -------------------------------- | ----------------------------------------------------- |
+| `sortUses`        | `true`                           | Sort `use` statements by `importOrder`, then by name. |
+| `expandUseGroups` | `true`                           | Split grouped imports into one statement per symbol.  |
+| `importOrder`     | `["const", "class", "function"]` | Order of import kinds when `sortUses` is on.          |
+
+### Heredocs
+
+| Key                  | Default  | Values                                          |
+| -------------------- | -------- | ----------------------------------------------- |
+| `heredocIndentation` | `"none"` | `"start_plus_one"`, `"same_as_start"`, `"none"` |
+
+## Blade options
+
+`blade.blockDirectives` declares your own block directives, such as a `Blade::if`. Their bodies are
+indented like `@if`.
+
+```json title="laravel-fmt.json"
+{
+  "blade": {
+    "blockDirectives": [{ "open": "disk", "branches": ["elsedisk"] }]
+  }
+}
+```
+
+| Field      | Required | Meaning                                         |
+| ---------- | -------- | ----------------------------------------------- |
+| `open`     | yes      | The opening directive, without `@`              |
+| `close`    | no       | The closing directive. Defaults to `end` + open |
+| `branches` | no       | Directives inside the block, like `@else`       |
+
+## Precedence
+
+`laravel-fmt.json` always wins. Settings from [existing config files](/docs/existing-config-files) fill in
+the keys you leave out. Unknown keys and bad values stop the run.

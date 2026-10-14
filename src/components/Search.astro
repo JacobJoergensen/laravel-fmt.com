@@ -1,0 +1,273 @@
+---
+import SearchIcon from "./icons/SearchIcon.astro";
+
+const RESULTS_ID = "search-results";
+---
+
+<docs-search class="contents">
+    <button
+        type="button"
+        class="flex h-7.75 cursor-pointer items-center gap-2 rounded-[7px] border border-border bg-transparent pl-2.5 pr-1.5 text-[13px] text-muted transition-colors hover:border-border-strong hover:text-text max-[860px]:w-7.75 max-[860px]:justify-center max-[860px]:p-0"
+        aria-label="Search docs"
+        data-search-open
+    >
+        <SearchIcon size={14} />
+        <span class="pr-5 max-[860px]:hidden">Search</span>
+        <kbd
+            class="rounded border border-border px-1.25 py-px font-mono text-[10.5px] text-faint max-[860px]:hidden"
+            data-search-shortcut
+        >
+            Ctrl K
+        </kbd>
+    </button>
+
+    <dialog
+        class="mx-auto mb-auto mt-[12vh] w-[min(640px,calc(100vw-32px))] overflow-hidden rounded-xl border border-border bg-surface p-0 text-text shadow-[0_24px_60px_-28px_rgba(0,0,0,0.8)] backdrop:bg-black/35 backdrop:backdrop-blur-[2px]"
+        aria-label="Search docs"
+        data-search-dialog
+    >
+        <div class="flex items-center gap-3 border-b border-border px-4">
+            <SearchIcon size={16} class="shrink-0 text-faint" />
+            <input
+                type="text"
+                role="combobox"
+                aria-expanded="false"
+                aria-controls={RESULTS_ID}
+                aria-autocomplete="list"
+                aria-label="Search docs"
+                placeholder="Search the docs"
+                autocomplete="off"
+                spellcheck="false"
+                class="h-13 w-full border-0 bg-transparent text-[15px] text-text outline-none! placeholder:text-faint"
+                data-search-input
+            />
+            <kbd class="rounded border border-border px-1.25 py-px font-mono text-[10.5px] text-faint">
+                Esc
+            </kbd>
+        </div>
+
+        <div id={RESULTS_ID} role="listbox" class="max-h-[60vh] overflow-y-auto p-2 empty:hidden" data-search-results>
+        </div>
+
+        <p class="m-0 px-5 py-9 text-center text-[13.5px] text-muted empty:hidden" data-search-status></p>
+    </dialog>
+</docs-search>
+
+<script>
+    interface PagefindSubResult {
+        title: string;
+        url: string;
+        excerpt: string;
+    }
+
+    interface PagefindPage {
+        url: string;
+        excerpt: string;
+        meta: { title?: string };
+        sub_results: PagefindSubResult[];
+    }
+
+    interface Pagefind {
+        debouncedSearch(
+            query: string,
+        ): Promise<{ results: { data(): Promise<PagefindPage> }[] } | null>;
+    }
+
+    interface Row {
+        url: string;
+        page: string;
+        section: string | undefined;
+        excerpt: string;
+    }
+
+    const INDEX_URL = "/pagefind/pagefind.js";
+    const MAX_PAGES = 6;
+    const MAX_SECTIONS = 2;
+
+    class DocsSearch extends HTMLElement {
+        dialog = this.querySelector<HTMLDialogElement>("[data-search-dialog]")!;
+        input = this.querySelector<HTMLInputElement>("[data-search-input]")!;
+        results = this.querySelector<HTMLElement>("[data-search-results]")!;
+        status = this.querySelector<HTMLElement>("[data-search-status]")!;
+        pagefind: Promise<Pagefind> | undefined;
+        active = -1;
+
+        constructor() {
+            super();
+
+            if (/Mac|iPhone|iPad/.test(navigator.userAgent)) {
+                this.querySelector("[data-search-shortcut]")!.textContent = "⌘ K";
+            }
+
+            this.querySelector("[data-search-open]")!.addEventListener("click", () => this.open());
+
+            addEventListener("keydown", (e) => {
+                const typing = e.target instanceof HTMLElement && e.target.closest("input, textarea, [contenteditable]");
+
+                if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+                    e.preventDefault();
+                    this.open();
+                } else if (e.key === "/" && !typing && !this.dialog.open) {
+                    e.preventDefault();
+                    this.open();
+                }
+            });
+
+            this.input.addEventListener("input", () => this.search(this.input.value));
+            this.input.addEventListener("keydown", (e) => this.navigate(e));
+
+            this.results.addEventListener("mousemove", (e) => {
+                const option = (e.target as HTMLElement).closest<HTMLElement>("[role=option]");
+
+                if (option && Number(option.dataset.index) !== this.active) {
+                    this.setActive(Number(option.dataset.index));
+                }
+            });
+
+            this.dialog.addEventListener("click", (e) => {
+                if (e.target === this.dialog || (e.target as HTMLElement).closest("a")) {
+                    this.dialog.close();
+                }
+            });
+
+            this.dialog.addEventListener("close", () => {
+                document.documentElement.classList.remove("overflow-hidden");
+            });
+        }
+
+        open() {
+            if (!this.dialog.open) {
+                this.dialog.showModal();
+                document.documentElement.classList.add("overflow-hidden");
+            }
+
+            this.input.select();
+            this.load().catch(() => {});
+        }
+
+        load() {
+            this.pagefind ??= import(/* @vite-ignore */ INDEX_URL);
+
+            return this.pagefind;
+        }
+
+        async search(query: string) {
+            let pagefind: Pagefind;
+
+            try {
+                pagefind = await this.load();
+            } catch {
+                this.render([], "Search is only available in the built site. Run pnpm build && pnpm preview.");
+                return;
+            }
+
+            const response = await pagefind.debouncedSearch(query);
+
+            if (response === null || query !== this.input.value) {
+                return;
+            }
+
+            if (query.trim() === "") {
+                this.render([], "");
+                return;
+            }
+
+            const pages = await Promise.all(response.results.slice(0, MAX_PAGES).map((r) => r.data()));
+
+            if (query !== this.input.value) {
+                return;
+            }
+
+            const rows = pages.flatMap((page): Row[] => {
+                const title = page.meta.title ?? page.url;
+
+                if (page.sub_results.length === 0) {
+                    return [{ url: page.url, page: title, section: undefined, excerpt: page.excerpt }];
+                }
+
+                return page.sub_results.slice(0, MAX_SECTIONS).map((sub) => ({
+                    url: sub.url,
+                    page: title,
+                    section: sub.title === title ? undefined : sub.title,
+                    excerpt: sub.excerpt,
+                }));
+            });
+
+            this.render(rows, rows.length === 0 ? `No results for "${query}"` : "");
+        }
+
+        render(rows: Row[], status: string) {
+            this.results.replaceChildren(
+                ...rows.map((row, i) => {
+                    const a = document.createElement("a");
+                    a.href = row.url;
+                    a.id = `search-result-${i}`;
+                    a.dataset.index = String(i);
+                    a.setAttribute("role", "option");
+                    a.className =
+                        "block rounded-lg px-3 py-2.5 no-underline transition-colors aria-selected:bg-surface2";
+
+                    const title = document.createElement("div");
+                    title.className = "text-[14px] font-medium text-text";
+                    title.textContent = row.page;
+
+                    if (row.section) {
+                        const section = document.createElement("span");
+                        section.className = "font-normal text-muted";
+                        section.textContent = ` › ${row.section}`;
+                        title.append(section);
+                    }
+
+                    const excerpt = document.createElement("p");
+                    excerpt.className =
+                        "m-0 mt-1 line-clamp-2 text-[13px] leading-normal text-muted [&_mark]:bg-transparent [&_mark]:font-medium [&_mark]:text-cyan-soft";
+                    excerpt.innerHTML = row.excerpt;
+
+                    a.append(title, excerpt);
+
+                    return a;
+                }),
+            );
+
+            this.status.textContent = status;
+            this.input.setAttribute("aria-expanded", String(rows.length > 0));
+            this.active = -1;
+            this.input.removeAttribute("aria-activedescendant");
+
+            if (rows.length > 0) {
+                this.setActive(0);
+            }
+        }
+
+        navigate(e: KeyboardEvent) {
+            const count = this.results.children.length;
+
+            if (count === 0) {
+                return;
+            }
+
+            if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+                e.preventDefault();
+                this.setActive((this.active + (e.key === "ArrowDown" ? 1 : -1) + count) % count, true);
+            } else if (e.key === "Enter" && this.active >= 0) {
+                e.preventDefault();
+                (this.results.children[this.active] as HTMLAnchorElement).click();
+            }
+        }
+
+        setActive(index: number, scroll = false) {
+            for (const [i, option] of Array.from(this.results.children).entries()) {
+                option.setAttribute("aria-selected", String(i === index));
+            }
+
+            this.active = index;
+            this.input.setAttribute("aria-activedescendant", `search-result-${index}`);
+
+            if (scroll) {
+                this.results.children[index]?.scrollIntoView({ block: "nearest" });
+            }
+        }
+    }
+
+    customElements.define("docs-search", DocsSearch);
+</script>

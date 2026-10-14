@@ -1,0 +1,93 @@
+---
+const R = "#ff5d6a"; // keywords
+const G = "#9fe0c0"; // strings
+const M = "#57c7e3"; // methods
+const V = "#e6b673"; // variables
+
+type Tok = { c?: string; t: string };
+type Line = Tok[];
+
+const messy: Line[] = [
+    [{ c: R, t: "<?php" }],
+    [{ c: R, t: "namespace" }, { t: " App\\Http\\Controllers;" }],
+    [{ c: R, t: "use" }, { t: " App\\Models\\User;" }],
+    [{ c: R, t: "use" }, { t: " App\\Models\\Post;" }],
+    [{ c: R, t: "class" }, { t: " PostController {" }],
+    [{ t: "  " }, { c: R, t: "public" }, { t: " " }, { c: R, t: "function" }, { t: " " }, { c: M, t: "index" }, { t: "(User " }, { c: V, t: "$user" }, { t: "){" }],
+    [{ t: "    " }, { c: V, t: "$posts" }, { t: "=Post::" }, { c: M, t: "query" }, { t: "()" }],
+    [{ t: "->" }, { c: M, t: "whereBelongsTo" }, { t: "(" }, { c: V, t: "$user" }, { t: ")" }],
+    [{ t: "->" }, { c: M, t: "latest" }, { t: "(" }, { c: G, t: "'published_at'" }, { t: ")->" }, { c: M, t: "get" }, { t: "();" }],
+    [{ t: "    " }, { c: R, t: "return" }, { t: " " }, { c: V, t: "$posts" }, { t: ";" }],
+    [{ t: "  }" }],
+    [{ t: "}" }],
+];
+
+const clean: Line[] = [
+    [{ c: R, t: "<?php" }],
+    [],
+    [{ c: R, t: "namespace" }, { t: " App\\Http\\Controllers;" }],
+    [],
+    [{ c: R, t: "use" }, { t: " App\\Models\\Post;" }],
+    [{ c: R, t: "use" }, { t: " App\\Models\\User;" }],
+    [],
+    [{ c: R, t: "class" }, { t: " PostController" }],
+    [{ t: "{" }],
+    [{ t: "    " }, { c: R, t: "public" }, { t: " " }, { c: R, t: "function" }, { t: " " }, { c: M, t: "index" }, { t: "(User " }, { c: V, t: "$user" }, { t: ")" }],
+    [{ t: "    {" }],
+    [{ t: "        " }, { c: V, t: "$posts" }, { t: " = Post::" }, { c: M, t: "query" }, { t: "()" }],
+    [{ t: "            ->" }, { c: M, t: "whereBelongsTo" }, { t: "(" }, { c: V, t: "$user" }, { t: ")" }],
+    [{ t: "            ->" }, { c: M, t: "latest" }, { t: "(" }, { c: G, t: "'published_at'" }, { t: ")->" }, { c: M, t: "get" }, { t: "();" }],
+    [],
+    [{ t: "        " }, { c: R, t: "return" }, { t: " " }, { c: V, t: "$posts" }, { t: ";" }],
+    [{ t: "    }" }],
+    [{ t: "}" }],
+];
+---
+
+<div class="relative mx-auto max-w-180 overflow-hidden rounded-xl border border-[rgba(0,173,216,0.28)] bg-code-bg scheme-dark">
+    <div
+        class="flex items-center justify-between border-b border-[rgba(0,173,216,0.2)] bg-[rgba(0,173,216,0.06)] px-3.5 py-2.5 font-mono text-[11px] tracking-[0.08em]"
+        aria-hidden="true"
+    >
+        <span class="flex items-center gap-2">
+            <span class="animate-demo-in text-[#cdd0da] opacity-40 [--dim:0.4]">INPUT</span>
+            <span class="text-[#5c8d9b]">&rarr;</span>
+            <span class="animate-demo-out text-[#7fd9ea] [--dim:0.4]">OUTPUT</span>
+        </span>
+        <span class="text-[#5c8d9b]">PostController.php</span>
+    </div>
+
+    <div class="relative grid min-h-112.5">
+        <div class="col-start-1 row-start-1 overflow-x-auto px-4.5 py-4 font-mono text-[13px] leading-5.5 text-[#cdd0da]">
+            <span class="sr-only">After Laravel Fmt:</span>
+            {
+                clean.map((line) => (
+                    <div class="min-h-5.5 whitespace-pre">
+                        {line.map((tok) =>
+                            tok.c ? <span style={`color:${tok.c}`}>{tok.t}</span> : <span>{tok.t}</span>
+                        )}
+                    </div>
+                ))
+            }
+        </div>
+
+        <div class="pointer-events-none col-start-1 row-start-1 animate-demo-wipe overflow-hidden bg-code-bg px-4.5 py-4 font-mono text-[13px] leading-5.5 text-[#cdd0da] opacity-0">
+            <span class="sr-only">Before Laravel Fmt:</span>
+            {
+                messy.map((line) => (
+                    <div class="min-h-5.5 whitespace-pre">
+                        {line.map((tok) =>
+                            tok.c ? <span style={`color:${tok.c}`}>{tok.t}</span> : <span>{tok.t}</span>
+                        )}
+                    </div>
+                ))
+            }
+        </div>
+
+        <div
+            class="pointer-events-none absolute left-0 right-0 h-7 animate-demo-sweep border-b-[1.5px] border-[rgba(87,199,227,0.85)] bg-[linear-gradient(180deg,rgba(0,173,216,0),rgba(0,173,216,0.18))] opacity-0 shadow-[0_0_18px_2px_rgba(0,173,216,0.3)]"
+            aria-hidden="true"
+        >
+        </div>
+    </div>
+</div>

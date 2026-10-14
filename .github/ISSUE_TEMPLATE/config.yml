@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Bug or feature request for the package
+    url: https://github.com/jacobjoergensen/laravel-fmt/issues
+    about: Anything about Laravel Fmt itself rather than this website.

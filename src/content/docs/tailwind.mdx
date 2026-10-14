@@ -1,0 +1,59 @@
+---
+title: Tailwind
+description: Laravel Fmt sorts Tailwind classes in the official Tailwind v4 order. No plugin needed.
+group: Reference
+order: 40
+---
+
+import Callout from "../../components/docs/Callout.astro";
+
+## Enabling it
+
+Sorting turns on when a `.css` file anywhere under `resources/css/` imports Tailwind, directly or
+through another `@import`.
+
+```css title="resources/css/app.css"
+@import "tailwindcss";
+```
+
+To name the stylesheet yourself, set `tailwind.stylesheet` in `laravel-fmt.json` to a path or a list
+of paths. Prettier's `tailwindStylesheet` is read too.
+
+<Callout label="v3">
+    Tailwind v3 is not supported. Classes are always sorted in the v4 order.
+</Callout>
+
+## Your theme tokens
+
+Your `@theme`, `@utility`, and `@custom-variant` definitions are read, including ones in imported
+files. Classes built from them sort with the built-in ones. A class Tailwind would not generate sorts
+first.
+
+```css title="resources/css/app.css"
+@import "tailwindcss";
+
+@theme {
+    --color-brand: #ff2d20;
+    --spacing-gutter: 1.75rem;
+}
+```
+
+Here `bg-brand` sorts with the other background colors, and `p-gutter` with the other spacing classes.
+
+## Blade in class lists
+
+A class touching a Blade echo stays where it is. Classes never move across it.
+
+```blade
+<div class="rounded p-4 bg-{{ $color }}-500">
+```
+
+A trailing `!important` stays last.
+
+## Where it applies
+
+- `class` attributes in Blade, Livewire 4, and HTML
+- class strings in `:class` and `@class([...])`
+- `@apply` in CSS
+
+A `class` attribute or class string that spans several lines is not sorted.

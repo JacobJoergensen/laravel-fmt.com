@@ -1,0 +1,67 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BetaBanner from "../components/BetaBanner.astro";
+import Nav from "../components/Nav.astro";
+import Hero from "../components/Hero.astro";
+import FormatterDemo from "../components/FormatterDemo.astro";
+import WhatItFormats from "../components/WhatItFormats.astro";
+import Features from "../components/Features.astro";
+import { getEntry } from "astro:content";
+
+const changelog = await getEntry("docs", "changelog");
+const release = /^## Version (\S+) \((\d{4}-\d{2}-\d{2})\)/m.exec(changelog?.body ?? "");
+
+const stars = await fetch("https://api.github.com/repos/jacobjoergensen/laravel-fmt")
+    .then((res) => (res.ok ? (res.json() as Promise<{ stargazers_count: number }>) : undefined))
+    .then((repo) => repo?.stargazers_count)
+    .catch(() => undefined);
+
+const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Laravel Fmt",
+    description: "A modern code formatter for Laravel, written in Go.",
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Windows, macOS, Linux",
+    softwareRequirements: "PHP 8.3+",
+    programmingLanguage: "Go",
+    softwareVersion: release?.[1],
+    dateModified: release?.[2],
+    url: "https://laravel-fmt.com",
+    codeRepository: "https://github.com/jacobjoergensen/laravel-fmt",
+    sameAs: ["https://packagist.org/packages/jacobjoergensen/laravel-fmt"],
+    license: "https://opensource.org/license/mit",
+    author: {
+        "@type": "Person",
+        name: "Jacob Jørgensen",
+        url: "https://github.com/jacobjoergensen",
+    },
+};
+
+const section = "mx-auto max-w-280 px-7";
+---
+
+<Layout>
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+    <BetaBanner />
+    <Nav />
+
+    <main id="main" tabindex="-1" class="scroll-mt-19 focus:outline-none">
+        <section class:list={[section, "pt-21"]}>
+            <Hero version={release?.[1]} stars={stars} />
+        </section>
+
+        <section class:list={[section, "pt-16"]}>
+            <FormatterDemo />
+        </section>
+
+        <section class:list={[section, "pt-24"]}>
+            <WhatItFormats />
+        </section>
+
+        <section class:list={[section, "pt-24"]}>
+            <Features />
+        </section>
+    </main>
+</Layout>

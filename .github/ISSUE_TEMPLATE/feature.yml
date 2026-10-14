@@ -1,0 +1,30 @@
+name: Docs or site improvement
+description: Suggest a change to the documentation or to the site itself.
+labels: ["proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Typos and small wording fixes do not need an issue. Every docs page has an "Edit this page" link that takes you straight to the source.
+  - type: dropdown
+    id: area
+    attributes:
+      label: What does this concern?
+      options:
+        - "Something the docs say, or do not say"
+        - "The site itself"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is missing or unclear?
+      description: What you were trying to work out, and where you got stuck.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What do you have in mind?
+    validations:
+      required: false

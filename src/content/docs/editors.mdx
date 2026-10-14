@@ -1,0 +1,37 @@
+---
+title: Editors
+description: Format on save with the built-in language server, or by piping a buffer through stdin.
+group: Usage
+order: 11
+---
+
+import Callout from "../../components/docs/Callout.astro";
+
+## PhpStorm
+
+Install the **laravel-fmt** plugin from Settings | Plugins | Marketplace. It formats PHP and Blade
+files on Reformat Code, and on save when Actions on Save | Reformat code is on. Requires PhpStorm 2025.1
+or later.
+
+<Callout label="beta">
+    There is no VS Code extension yet. Use the language server below.
+</Callout>
+
+## The language server
+
+```sh
+vendor/bin/laravel-fmt lsp
+```
+
+It formats documents and selections over stdio.
+
+## Piping a buffer
+
+Editors without LSP support can pipe the buffer through `--stdin-filepath`. The path picks the
+language.
+
+```sh
+vendor/bin/laravel-fmt --stdin-filepath app/Models/User.php < input.php
+```
+
+If the code does not parse, nothing is written and your buffer is kept. To format a selection, add [`--range-start` and `--range-end`](/docs/cli#--range-start-and---range-end).

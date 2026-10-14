@@ -1,0 +1,30 @@
+{
+    "$schema": "./node_modules/oxfmt/configuration_schema.json",
+    "printWidth": 120,
+    "tabWidth": 4,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": false,
+    "overrides": [
+        {
+            "files": ["**/*.yml"],
+            "options": {
+                "tabWidth": 2
+            }
+        },
+        {
+            "files": ["src/content/docs/*.mdx"],
+            "options": {
+                "embeddedLanguageFormatting": "off"
+            }
+        }
+    ],
+    "sortTailwindcss": {
+        "stylesheet": "src/styles/global.css"
+    },
+    "sortImports": {
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+        "newlinesBetween": false
+    },
+    "ignorePatterns": ["dist", ".astro"]
+}

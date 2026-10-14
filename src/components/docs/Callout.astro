@@ -1,0 +1,33 @@
+---
+interface Props {
+    label?: string;
+}
+
+const { label = "note" } = Astro.props;
+---
+
+<div class="mb-9 mt-8 flex gap-3.25 rounded-[10px] border border-l-[2.5px] border-border border-l-cyan bg-surface px-4.25 py-3.75">
+    <span class="mt-px shrink-0 font-mono text-[13px] text-cyan-soft">{label}</span>
+    <div class="callout-body text-[14.5px] leading-[1.6] text-muted"><slot /></div>
+</div>
+
+<style>
+    .callout-body :global(p) {
+        margin: 0;
+    }
+
+    .callout-body :global(p + p) {
+        margin-top: 10px;
+    }
+
+    .callout-body :global(strong) {
+        color: var(--color-text);
+        font-weight: 600;
+    }
+
+    .callout-body :global(code) {
+        font-family: var(--font-mono), monospace;
+        font-size: 0.88em;
+        color: var(--color-cyan-soft);
+    }
+</style>

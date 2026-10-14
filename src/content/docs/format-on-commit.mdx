@@ -1,0 +1,48 @@
+---
+title: Format on commit
+description: Use --staged in a pre-commit hook to format staged content without touching unstaged work.
+group: Workflow
+order: 30
+---
+
+`--staged` formats what you staged and re-stages it. Unstaged edits are never touched.
+
+```sh
+vendor/bin/laravel-fmt --staged
+```
+
+## The hook
+
+```sh title=".git/hooks/pre-commit"
+#!/bin/sh
+vendor/bin/laravel-fmt --staged
+```
+
+Make it executable with `chmod +x .git/hooks/pre-commit`. The same line works in `.husky/pre-commit`.
+
+## Partly staged files
+
+If a file also has unstaged edits, the staged part is formatted and your working copy is left alone:
+
+```text title="Terminal"
+~ app/Models/User.php
+~ resources/views/nav.blade.php (re-staged; working tree kept, unstaged changes)
+
+✓ 2 files formatted and re-staged
+```
+
+`git diff` will show the formatting undone. Do not `git add` the file again.
+
+Reformatting does not stop the commit. It stops only if a file fails to format.
+
+## lint-staged
+
+```json title="package.json"
+{
+  "lint-staged": {
+    "*.php": "vendor/bin/laravel-fmt"
+  }
+}
+```
+
+lint-staged passes file paths, so ignored files get formatted too. The `--staged` hook does not.

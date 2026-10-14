@@ -1,0 +1,107 @@
+---
+title: Existing config files
+description: How Laravel Fmt reads your existing EditorConfig, Prettier, Pint, PHP-CS-Fixer, and Mago files.
+group: Configuration
+order: 22
+---
+
+## Precedence
+
+Later sources override earlier ones:
+
+1. `.editorconfig`
+2. Prettier config
+3. `.php-cs-fixer.php`, or `.php-cs-fixer.dist.php`
+4. `pint.json`
+5. `mago.toml`
+
+`laravel-fmt.json` overrides all five. In a Laravel app, Pint, PHP-CS-Fixer, and Mago files are read
+from the app root only.
+
+## EditorConfig
+
+| EditorConfig property | Laravel Fmt key                                      |
+| --------------------- | ---------------------------------------------------- |
+| `indent_style`        | `indentStyle`                                        |
+| `indent_size`         | `indentWidth`                                        |
+| `tab_width`           | `indentWidth`, when `indent_size` is absent or `tab` |
+| `end_of_line`         | `endOfLine`                                          |
+| `max_line_length`     | `printWidth`                                         |
+
+Sections apply per file. The search stops at `root = true`.
+
+## Prettier
+
+Read from the `prettier` key in `package.json` or `.prettierrc` (JSON or YAML).
+
+| Prettier option      | Laravel Fmt key                   |
+| -------------------- | --------------------------------- |
+| `printWidth`         | `printWidth`                      |
+| `tabWidth`           | `indentWidth`                     |
+| `useTabs`            | `indentStyle`                     |
+| `endOfLine`          | `endOfLine`                       |
+| `singleQuote`        | `quoteStyle`                      |
+| `proseWrap`          | `markdown.proseWrap`              |
+| `tailwindStylesheet` | `tailwind.stylesheet`, when unset |
+
+`overrides` apply per file. Prettier settings reach PHP only with `@prettier/plugin-php` in
+`plugins`, Blade only with a Blade plugin, and XML only with `@prettier/plugin-xml`.
+
+JavaScript, TypeScript, JSON5, and TOML Prettier configs are not read.
+
+## Pint and PHP-CS-Fixer
+
+Pint's `preset` (`laravel`, `psr12`, `symfony`, `per`) is applied first, then your `rules`. No preset
+means `laravel`. Without `pint.json`, requiring `laravel/pint` in `composer.json` counts as Pint.
+
+When Pint is detected, PHP files use 4 spaces and LF.
+
+| Rule                                         | Laravel Fmt key                          |
+| -------------------------------------------- | ---------------------------------------- |
+| `braces_position` or `curly_braces_position` | the brace styles                         |
+| `concat_space`                               | `php.concatSpace`                        |
+| `not_operator_with_successor_space`          | `php.notOperatorSpace`                   |
+| `function_declaration`                       | `php.closureFnSpace`                     |
+| `binary_operator_spaces`                     | `php.alignFatArrow`, from the `=>` entry |
+| `blank_line_before_statement`                | `php.blankLineBeforeStatements`          |
+| `ordered_imports`                            | `php.sortUses` and `php.importOrder`     |
+| `single_import_per_statement`                | `php.expandUseGroups`                    |
+| `no_closing_tag`                             | `php.removeTrailingCloseTag`             |
+| `array_syntax`                               | `php.shortArray`                         |
+| `heredoc_indentation`                        | `php.heredocIndentation`                 |
+
+PHP-CS-Fixer has no preset, and rule sets like `@PSR12` are skipped. `.php-cs-fixer.php` is never
+executed. Only a literal `setRules([...])` array is read.
+
+## Mago
+
+Read from the `[formatter]` table in `mago.toml`. The `preset` (`psr-12`, `laravel`, `drupal`) is
+applied first, then your keys. No preset means Mago's own defaults, and every key below is set, not
+only the ones you write.
+
+| Mago key                                                                                     | Laravel Fmt key                                           |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `print-width`                                                                                | `printWidth`                                              |
+| `tab-width`                                                                                  | `indentWidth`                                             |
+| `use-tabs`                                                                                   | `indentStyle`                                             |
+| `end-of-line`                                                                                | `endOfLine`                                               |
+| `remove-trailing-close-tag`                                                                  | `php.removeTrailingCloseTag`                              |
+| `function-brace-style`, `method-brace-style`, `classlike-brace-style`, `control-brace-style` | the matching brace styles, not `anonymousClassBraceStyle` |
+| `space-around-concatenation-binary-operator`                                                 | `php.concatSpace`                                         |
+| `space-before-arrow-function-parameter-list-parenthesis`                                     | `php.closureFnSpace`                                      |
+| `empty-line-before-return`                                                                   | `php.blankLineBeforeStatements`                           |
+| `indent-heredoc`                                                                             | `php.heredocIndentation`                                  |
+| `sort-uses`                                                                                  | `php.sortUses`                                            |
+| `expand-use-groups`                                                                          | `php.expandUseGroups`                                     |
+
+`print-width`, `tab-width`, `use-tabs`, and `end-of-line` apply to every file, not only PHP.
+
+## Overriding a detected value
+
+Set the key in `laravel-fmt.json`.
+
+```json title="laravel-fmt.json"
+{
+  "printWidth": 100
+}
+```

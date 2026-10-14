@@ -1,0 +1,87 @@
+---
+const groups = {
+    laravel: { stripe: "shadow-[inset_0_2px_0_var(--color-red)]" },
+    frontend: { stripe: "shadow-[inset_0_2px_0_var(--color-cyan)]" },
+    config: { stripe: "shadow-[inset_0_2px_0_var(--color-faint)]" },
+};
+
+const formats = [
+    {
+        group: groups.laravel,
+        name: "PHP",
+        tokens: ["*.php"],
+        note: "Sorts imports, splits grouped ones, and drops a trailing ?>.",
+    },
+    {
+        group: groups.laravel,
+        name: "Blade",
+        tokens: ["*.blade.php"],
+        note: "Echoes, directives, and @php blocks go through the PHP formatter.",
+    },
+    {
+        group: groups.laravel,
+        name: "Livewire 4",
+        tokens: ["⚡*.blade.php"],
+        note: "Single-file pages and components, markup and class together.",
+    },
+    { group: groups.frontend, name: "HTML", tokens: ["*.html"], note: "Tailwind classes are sorted, and Alpine expressions get consistent spacing." },
+    {
+        group: groups.frontend,
+        name: "CSS",
+        tokens: ["*.css"],
+        note: "The @theme block also feeds Tailwind class sorting.",
+    },
+    {
+        group: groups.frontend,
+        name: "Alpine.js",
+        tokens: ["x-data", "@*"],
+        note: "Expressions in x-data, x-on, and @ attributes get consistent spacing.",
+    },
+    { group: groups.config, name: "Markdown", tokens: ["*.md"], note: "Line wrapping follows markdown.proseWrap." },
+    {
+        group: groups.config,
+        name: "JSON",
+        tokens: ["*.json", "*.jsonc"],
+        note: "Indented 2 spaces, or 4 in composer.json, unless indentWidth is set.",
+    },
+    { group: groups.config, name: "YAML", tokens: ["*.yml", "*.yaml"], note: "Always indented with spaces." },
+    {
+        group: groups.config,
+        name: "XML",
+        tokens: ["*.xml"],
+        note: "A trailing .dist is ignored, so phpunit.xml.dist formats as XML.",
+    },
+];
+---
+
+<div class="mb-7.5 flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+    <h2 class="m-0 font-display text-[clamp(26px,3.4vw,36px)] font-semibold tracking-tight">What it formats</h2>
+</div>
+
+<div class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
+    {
+        formats.map((f) => (
+            <div
+                class:list={[
+                    "flex flex-col gap-3.5 rounded-xl border border-border bg-surface p-5 transition hover:border-border-strong hover:bg-surface2",
+                    f.group.stripe,
+                ]}
+            >
+                <h3 class="m-0 font-display text-lg font-semibold tracking-[-0.015em]">{f.name}</h3>
+                <div class="flex flex-wrap gap-1.5">
+                    {f.tokens.map((t) => (
+                        <code class="rounded-md border border-border bg-surface2 px-2 py-0.75 font-mono text-[12.5px] text-cyan-soft">
+                            {t}
+                        </code>
+                    ))}
+                </div>
+                <p class="m-0 text-[13.5px] leading-[1.55] text-muted">{f.note}</p>
+            </div>
+        ))
+    }
+</div>
+
+<p class="mb-0 mt-4 text-[13.5px] text-muted">
+    Other files are skipped.{" "}
+    <a href="/docs/what-it-formats" class="text-cyan-soft no-underline hover:underline">Full list&nbsp;&rarr;</a>
+</p>

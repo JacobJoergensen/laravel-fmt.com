@@ -1,0 +1,54 @@
+---
+title: Getting started
+description: Install Laravel Fmt and format your first Laravel file.
+group: Introduction
+order: 1
+---
+
+import Callout from "../../components/docs/Callout.astro";
+
+<Callout label="beta">
+    Laravel Fmt is in **public beta** and not recommended for production code yet.
+</Callout>
+
+## Install
+
+```sh
+composer require jacobjoergensen/laravel-fmt:@beta --dev
+```
+
+<div class="note">Requires PHP&nbsp;8.3+.</div>
+
+## Format your project
+
+Run it with no arguments to format the whole project, or pass paths.
+
+```sh
+# format the whole project
+vendor/bin/laravel-fmt
+
+# format specific paths
+vendor/bin/laravel-fmt app/Models resources/views
+```
+
+See [What it formats](/docs/what-it-formats) for the full list of supported languages.
+
+## Check without writing
+
+`--check` lists the files that would change. `--diff` shows the changes. Neither writes anything.
+
+```sh
+vendor/bin/laravel-fmt --check
+vendor/bin/laravel-fmt --diff
+```
+
+## Configuration
+
+No config file is needed. `init` writes a `laravel-fmt.json` you can edit.
+
+```sh
+vendor/bin/laravel-fmt init
+```
+
+Your existing Pint, PHP-CS-Fixer, Mago, EditorConfig, and Prettier config is read too. See
+[Existing config files](/docs/existing-config-files).

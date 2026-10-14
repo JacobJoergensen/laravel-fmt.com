@@ -1,0 +1,196 @@
+---
+import GitHubIcon from "./icons/GitHubIcon.astro";
+import MoonIcon from "./icons/MoonIcon.astro";
+import SunIcon from "./icons/SunIcon.astro";
+import MenuIcon from "./icons/MenuIcon.astro";
+import CloseIcon from "./icons/CloseIcon.astro";
+import Logo from "./Logo.astro";
+import Search from "./Search.astro";
+import { getDocsNav } from "../config/DocsNav";
+
+interface Props {
+    docs?: boolean;
+    currentId?: string;
+}
+
+const { docs = false, currentId } = Astro.props;
+
+const docsUrl = "/docs/getting-started";
+const repoUrl = "https://github.com/jacobjoergensen/laravel-fmt";
+
+const MENU_ID = "mobile-menu";
+
+const docsNav = docs ? await getDocsNav() : [];
+---
+
+<nav class="sticky top-0 z-40 flex items-center justify-between gap-6 border-b border-border bg-nav px-7 py-3.25 backdrop-blur-md">
+    <a href="/" class="flex items-center gap-2.5 text-text no-underline">
+        <Logo class="size-6.5 shrink-0" />
+        <span class="font-mono text-[15px] font-semibold tracking-[-0.3px]">laravel-fmt</span>
+        {
+            docs && (
+                <span class="ml-0.5 rounded-[5px] border border-border px-1.5 py-0.5 font-mono text-[11px] text-faint">
+                    docs
+                </span>
+            )
+        }
+    </a>
+
+    <div class="flex items-center gap-5.5 text-sm">
+        <div class="flex items-center gap-5.5 max-[860px]:hidden">
+            <a
+                href={docsUrl}
+                class:list={["no-underline transition-colors hover:text-text", docs ? "text-text" : "text-muted"]}
+            >
+                Docs
+            </a>
+
+            <a
+                href={repoUrl}
+                class="flex items-center text-muted transition-colors hover:text-text"
+                aria-label="GitHub repository"
+            >
+                <GitHubIcon size={17} />
+            </a>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <Search />
+
+            <button
+                type="button"
+                class="grid size-7.75 cursor-pointer place-items-center rounded-[7px] border border-border bg-transparent text-muted transition-colors hover:border-border-strong hover:text-text"
+                aria-label="Toggle color theme"
+                data-theme-toggle
+            >
+                <MoonIcon size={15} class="light:hidden" />
+                <SunIcon size={15} class="dark:hidden" />
+            </button>
+
+            <nav-menu class="min-[861px]:hidden">
+                <button
+                    type="button"
+                    class="group grid size-7.75 cursor-pointer place-items-center rounded-[7px] border border-border bg-transparent text-muted transition-colors hover:border-border-strong hover:text-text"
+                    aria-label="Open menu"
+                    aria-expanded="false"
+                    aria-controls={MENU_ID}
+                    data-menu-button
+                >
+                    <MenuIcon size={16} class="group-aria-expanded:hidden" />
+                    <CloseIcon size={16} class="hidden group-aria-expanded:block" />
+                </button>
+            </nav-menu>
+        </div>
+    </div>
+
+    <div
+        id={MENU_ID}
+        class="absolute left-0 right-0 top-full hidden max-h-[75dvh] overflow-y-auto border-b border-border bg-bg px-7 pb-8 pt-6 min-[861px]:hidden"
+        data-menu-panel
+    >
+        <div class="flex flex-col gap-px">
+            <a
+                href={docsUrl}
+                class:list={[
+                    "rounded-md px-2.5 py-2.5 text-[15px] no-underline transition-colors hover:text-text",
+                    docs ? "text-text" : "text-muted",
+                ]}
+            >
+                Docs
+            </a>
+
+            <a
+                href={repoUrl}
+                class="flex items-center gap-2.5 rounded-md px-2.5 py-2.5 text-[15px] text-muted no-underline transition-colors hover:text-text"
+            >
+                <GitHubIcon size={16} /> GitHub
+            </a>
+        </div>
+
+        {
+            docs && (
+                <div class="mt-6 border-t border-border pt-6">
+                    {docsNav.map((g) => (
+                        <div class="mb-5.5 last:mb-0">
+                            <div class="mb-2.5 font-mono text-[10.5px] uppercase tracking-widest text-faint">
+                                {g.group}
+                            </div>
+                            <div class="flex flex-col gap-px">
+                                {g.items.map((it) => (
+                                    <a
+                                        href={it.slug ? `/docs/${it.slug}` : it.href}
+                                        class:list={[
+                                            "rounded-md border-l-2 border-l-transparent px-2.5 py-2 text-[14px] no-underline transition hover:text-text",
+                                            it.slug === currentId
+                                                ? "border-l-red bg-surface font-medium text-text"
+                                                : "text-muted",
+                                        ]}
+                                    >
+                                        {it.title}
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )
+        }
+    </div>
+</nav>
+
+<script>
+    document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+
+            document.documentElement.dataset.theme = next;
+
+            try {
+                localStorage.setItem("theme", next);
+            } catch (e) {}
+        });
+    });
+</script>
+
+<script>
+    class NavMenu extends HTMLElement {
+        btn = this.querySelector<HTMLButtonElement>("[data-menu-button]")!;
+        nav = this.closest("nav")!;
+        panel = this.closest("nav")!.querySelector<HTMLElement>("[data-menu-panel]")!;
+
+        constructor() {
+            super();
+
+            this.btn.addEventListener("click", () => {
+                this.setExpanded(this.btn.getAttribute("aria-expanded") !== "true");
+            });
+
+            this.nav.addEventListener("keyup", (e) => {
+                if ((e as KeyboardEvent).code === "Escape") {
+                    this.setExpanded(false);
+                    this.btn.focus();
+                }
+            });
+
+            matchMedia("(min-width: 861px)").addEventListener("change", () => {
+                this.setExpanded(false);
+            });
+        }
+
+        setExpanded(expanded: boolean) {
+            this.btn.setAttribute("aria-expanded", String(expanded));
+            this.btn.setAttribute("aria-label", expanded ? "Close menu" : "Open menu");
+            this.panel.classList.toggle("hidden", !expanded);
+
+            document.documentElement.classList.toggle("overflow-hidden", expanded);
+
+            for (const el of document.body.children) {
+                if (el !== this.nav) {
+                    el.toggleAttribute("inert", expanded);
+                }
+            }
+        }
+    }
+
+    customElements.define("nav-menu", NavMenu);
+</script>

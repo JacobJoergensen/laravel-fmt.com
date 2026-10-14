@@ -1,0 +1,133 @@
+---
+title: CLI
+description: Every Laravel Fmt command, flag, and exit code.
+group: Usage
+order: 10
+---
+
+```sh
+vendor/bin/laravel-fmt [paths...] [flags]
+```
+
+## Path arguments
+
+With no arguments, the whole project is formatted, except hidden and [ignored files](/docs/ignoring-files).
+Arguments can be files, directories, or globs:
+
+```sh
+vendor/bin/laravel-fmt app/Models/User.php
+vendor/bin/laravel-fmt app resources/views
+vendor/bin/laravel-fmt "resources/**/*.blade.php"
+```
+
+Quote globs so they work the same on every platform. A glob that matches nothing is an error.
+
+## `--check`
+
+List the files that would change. Writes nothing.
+
+```sh
+vendor/bin/laravel-fmt --check
+```
+
+## `--diff`
+
+Show the changes as a diff. Writes nothing.
+
+```sh
+vendor/bin/laravel-fmt --diff
+```
+
+## `--staged`
+
+Format staged changes and re-stage them. See [Format on commit](/docs/format-on-commit).
+
+```sh
+vendor/bin/laravel-fmt --staged
+```
+
+## `--since`
+
+Format only files changed since a git ref.
+
+```sh
+vendor/bin/laravel-fmt --since main --check
+```
+
+## `--config`
+
+Use a config file at a specific path.
+
+```sh
+vendor/bin/laravel-fmt --config build/laravel-fmt.json
+```
+
+## `--no-config`
+
+Skip `laravel-fmt.json`. Settings from your [existing config files](/docs/existing-config-files) still apply.
+
+## `--show-config`
+
+Print the config used for a file as JSON. Formats nothing.
+
+```sh
+vendor/bin/laravel-fmt --show-config app/Models/User.php
+```
+
+## `--stdin-filepath`
+
+Format stdin and write the result to stdout. The path picks the language and does not have to exist.
+
+```sh
+vendor/bin/laravel-fmt --stdin-filepath app/Models/User.php < input.php
+```
+
+## `--range-start` and `--range-end`
+
+Only apply changes that overlap these byte offsets. Requires `--stdin-filepath`.
+
+## `--color`
+
+`auto` (default), `never`, or `always`.
+
+## `--version`
+
+Print the version, commit, and platform. `-v` for short.
+
+## Flag combinations
+
+These are rejected:
+
+- `--config` with `--no-config`
+- `--staged` with `--since`, `--check`, `--diff`, `--stdin-filepath`, or paths
+- `--since` with `--stdin-filepath` or paths
+- `--stdin-filepath` with `--check`, `--diff`, or paths
+- `--show-config` with anything that formats
+
+## `init`
+
+Write a `laravel-fmt.json` with your detected settings in the current directory. Fails if one exists,
+unless you pass `--force`.
+
+```sh
+vendor/bin/laravel-fmt init
+vendor/bin/laravel-fmt init --force
+```
+
+## `lsp`
+
+Start the language server. See [Editors](/docs/editors).
+
+```sh
+vendor/bin/laravel-fmt lsp
+```
+
+## Exit codes
+
+| Code | Meaning                                                              |
+| ---- | -------------------------------------------------------------------- |
+| `0`  | Success                                                              |
+| `1`  | `--check` or `--diff` found files to change                          |
+| `2`  | An error: a file failed to parse, read, or write, or bad flags/paths |
+
+The same codes as Prettier.

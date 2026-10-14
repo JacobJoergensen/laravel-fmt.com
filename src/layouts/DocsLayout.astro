@@ -1,0 +1,378 @@
+---
+import Layout from "./Layout.astro";
+import Nav from "../components/Nav.astro";
+import BetaBanner from "../components/BetaBanner.astro";
+import ArrowUpRightIcon from "../components/icons/ArrowUpRightIcon.astro";
+import CopyIcon from "../components/icons/CopyIcon.astro";
+import { getDocsNav, groupForSlug, siblingsForSlug } from "../config/DocsNav";
+
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+    title: string;
+    description: string;
+    currentId: string;
+    headings: MarkdownHeading[];
+    markdown: string;
+}
+
+const { title, description, currentId, headings, markdown } = Astro.props;
+
+const toc = headings.filter((h) => h.depth === 2);
+
+const docsNav = await getDocsNav();
+const group = groupForSlug(docsNav, currentId) ?? "Introduction";
+const { prev, next } = siblingsForSlug(docsNav, currentId);
+
+const OVERVIEW_ID = "overview";
+
+const navLink =
+    "rounded-md border-l-2 border-l-transparent px-2.5 py-1.25 text-[13.5px] no-underline transition hover:text-text";
+
+const tocLink =
+    "rounded-md py-1 pl-2 pr-1 text-[12.5px] leading-snug text-muted no-underline transition hover:text-text aria-[current=true]:font-medium aria-[current=true]:text-cyan-soft";
+
+const paginationLink =
+    "flex-1 rounded-[10px] border border-border bg-surface px-4.25 py-3.5 no-underline transition hover:border-border-strong";
+
+const editUrl = `https://github.com/jacobjoergensen/laravel-fmt.com/edit/main/src/content/docs/${currentId}.mdx`;
+---
+
+<Layout title={`${title} · Laravel Fmt docs`} description={description}>
+    <BetaBanner />
+    <Nav docs currentId={currentId} />
+
+    <div class="mx-auto grid max-w-312 grid-cols-[248px_minmax(0,1fr)] items-start gap-14 px-7 max-[860px]:grid-cols-1 max-[860px]:px-5.5">
+        <aside class="sticky top-13.5 h-[calc(100vh-54px)] overflow-y-auto py-9 pr-3 max-[860px]:hidden">
+            <docs-toc>
+                <nav aria-label="Documentation">
+                    {
+                        docsNav.map((g) => (
+                            <div class="mb-5.5">
+                                <div class="mb-2.5 font-mono text-[10.5px] uppercase tracking-widest text-faint">
+                                    {g.group}
+                                </div>
+                                <div class="flex flex-col gap-px">
+                                    {g.items.map((it) => (
+                                        <Fragment>
+                                            <a
+                                                href={it.slug ? `/docs/${it.slug}` : it.href}
+                                                aria-current={it.slug === currentId ? "page" : undefined}
+                                                class:list={[
+                                                    navLink,
+                                                    it.slug === currentId
+                                                        ? "border-l-red bg-surface font-medium text-text"
+                                                        : "text-muted",
+                                                ]}
+                                            >
+                                                {it.title}
+                                            </a>
+
+                                            {it.slug === currentId && toc.length > 0 && (
+                                                <div class="my-1 ml-3.25 flex flex-col gap-px border-l border-border pl-2">
+                                                    <a href={`#${OVERVIEW_ID}`} data-toc-link={OVERVIEW_ID} class={tocLink}>
+                                                        Overview
+                                                    </a>
+                                                    {toc.map((h) => (
+                                                        <a href={`#${h.slug}`} data-toc-link={h.slug} class={tocLink}>
+                                                            {h.text}
+                                                        </a>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </Fragment>
+                                    ))}
+                                </div>
+                            </div>
+                        ))
+                    }
+                </nav>
+            </docs-toc>
+        </aside>
+
+        <main
+            id="main"
+            tabindex="-1"
+            class="min-w-0 scroll-mt-19 pb-30 pt-11 focus:outline-none max-[860px]:pt-8"
+            data-pagefind-body
+        >
+            <div class="max-w-195">
+                <div class="mb-5.5 flex flex-wrap items-center justify-between gap-4" data-pagefind-ignore>
+                    <div class="font-mono text-[11.5px] uppercase tracking-[0.06em] text-faint">
+                        {group}&nbsp;&nbsp;/&nbsp;&nbsp;<span class="text-cyan-soft">{title}</span>
+                    </div>
+                    <div class="flex items-center gap-5">
+                        <button
+                            type="button"
+                            class="flex cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-[12.5px] text-muted transition hover:text-text"
+                            data-copy-text={markdown}
+                        >
+                            <CopyIcon size={13} />
+                            <span data-copy-status>Copy as Markdown</span>
+                        </button>
+                        <a
+                            href={editUrl}
+                            class="flex items-center gap-2 text-[12.5px] text-muted no-underline transition hover:text-text"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            <ArrowUpRightIcon size={13} />
+                            Edit this page
+                        </a>
+                    </div>
+                </div>
+
+                <h1
+                    id={OVERVIEW_ID}
+                    class="mb-3.5 mt-0 scroll-mt-19 font-display text-[clamp(32px,5vw,40px)] font-semibold leading-[1.08] tracking-[-0.022em]"
+                >
+                    {title}
+                </h1>
+                <p class="mb-9 mt-0 text-[17px] leading-[1.65] text-muted">{description}</p>
+
+                <div class="prose">
+                    <slot />
+                </div>
+
+                {
+                    (prev ?? next) && (
+                        <nav
+                            aria-label="Page navigation"
+                            data-pagefind-ignore
+                            class="mt-14 flex gap-3 border-t border-border pt-8 max-[560px]:flex-col"
+                        >
+                            {prev && (
+                                <a href={`/docs/${prev.slug}`} class={paginationLink}>
+                                    <span class="mb-1.5 block font-mono text-[10.5px] uppercase tracking-widest text-faint">
+                                        Previous
+                                    </span>
+                                    <span class="block text-[14.5px] font-semibold text-text">
+                                        <span class="text-cyan-soft" aria-hidden="true">&#8592;&nbsp;</span>
+                                        {prev.title}
+                                    </span>
+                                </a>
+                            )}
+                            {next && (
+                                <a href={`/docs/${next.slug}`} class:list={[paginationLink, "text-right"]}>
+                                    <span class="mb-1.5 block font-mono text-[10.5px] uppercase tracking-widest text-faint">
+                                        Next
+                                    </span>
+                                    <span class="block text-[14.5px] font-semibold text-text">
+                                        {next.title}
+                                        <span class="text-cyan-soft" aria-hidden="true">&nbsp;&#8594;</span>
+                                    </span>
+                                </a>
+                            )}
+                        </nav>
+                    )
+                }
+            </div>
+        </main>
+    </div>
+</Layout>
+
+<script>
+    const ACTIVATION_LINE = 77;
+
+    class DocsToc extends HTMLElement {
+        links = new Map<string, HTMLAnchorElement>();
+        headings: HTMLElement[];
+        frame = 0;
+
+        constructor() {
+            super();
+
+            for (const a of this.querySelectorAll<HTMLAnchorElement>("[data-toc-link]")) {
+                this.links.set(a.dataset.tocLink ?? "", a);
+            }
+
+            this.headings = Array.from(this.links.keys())
+                .map((id) => document.getElementById(id))
+                .filter((el) => el !== null);
+
+            const schedule = () => {
+                cancelAnimationFrame(this.frame);
+                this.frame = requestAnimationFrame(() => this.update());
+            };
+
+            addEventListener("scroll", schedule, { passive: true });
+            addEventListener("resize", schedule, { passive: true });
+
+            this.update();
+        }
+
+        update() {
+            if (this.headings.length === 0) {
+                return;
+            }
+
+            const maxScroll = Math.max(document.documentElement.scrollHeight - innerHeight, 0);
+            const remaining = Math.max(maxScroll - scrollY, 0);
+
+            const slide = Math.min(innerHeight, maxScroll);
+            const progress = slide > 0 ? 1 - Math.min(remaining, slide) / slide : 0;
+            const line = ACTIVATION_LINE + (innerHeight - ACTIVATION_LINE) * progress;
+
+            let current = this.headings[0];
+
+            for (const heading of this.headings) {
+                if (heading.getBoundingClientRect().top > line) {
+                    break;
+                }
+
+                current = heading;
+            }
+
+            this.setCurrent(current?.id);
+        }
+
+        setCurrent(id: string | undefined) {
+            for (const [slug, link] of this.links) {
+                if (slug === id) {
+                    link.setAttribute("aria-current", "true");
+                } else {
+                    link.removeAttribute("aria-current");
+                }
+            }
+        }
+    }
+
+    customElements.define("docs-toc", DocsToc);
+</script>
+
+<style>
+    .prose > :global(p) {
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--color-muted);
+        margin: 0 0 18px;
+    }
+
+    .prose > :global(.note) {
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--color-faint);
+        margin: -8px 2px 34px;
+    }
+
+    .prose :global(h2) {
+        font-family: var(--font-display), sans-serif;
+        font-weight: 600;
+        font-size: 25px;
+        letter-spacing: -0.018em;
+        color: var(--color-text);
+        margin: 42px 0 16px;
+        scroll-margin-top: 76px;
+    }
+
+    .prose :global(h3) {
+        font-family: var(--font-display), sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--color-text);
+        margin: 30px 0 10px;
+        scroll-margin-top: 76px;
+    }
+
+    .prose :global(a) {
+        color: var(--color-cyan-soft);
+        font-weight: inherit;
+        text-decoration: none;
+    }
+
+    .prose :global(a:hover) {
+        text-decoration: underline;
+    }
+
+    .prose :global(strong) {
+        color: var(--color-text);
+        font-weight: 600;
+    }
+
+    .prose :global(ul),
+    .prose :global(ol) {
+        margin: 0 0 18px;
+        padding-left: 22px;
+    }
+
+    .prose :global(ul) {
+        list-style: disc;
+    }
+
+    .prose :global(ol) {
+        list-style: decimal;
+    }
+
+    .prose :global(li) {
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--color-muted);
+        margin-bottom: 6px;
+        padding-left: 2px;
+    }
+
+    .prose :global(li::marker) {
+        color: var(--color-faint);
+    }
+
+    .prose :global(ol > li::marker) {
+        font-family: var(--font-mono), monospace;
+        font-size: 13px;
+    }
+
+    .prose :global(hr) {
+        border: 0;
+        border-top: 1px solid var(--color-border);
+        margin: 34px 0;
+    }
+
+    .prose :global(blockquote) {
+        margin: 20px 0;
+        padding-left: 18px;
+        border-left: 2px solid var(--color-border-strong);
+    }
+
+    .prose :global(:not(pre) > code) {
+        font-family: var(--font-mono), monospace;
+        font-size: 0.86em;
+        font-weight: 400;
+        color: var(--color-cyan-soft);
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 5px;
+        padding: 2px 6px;
+    }
+
+    .prose :global(table) {
+        display: block;
+        overflow-x: auto;
+        border-collapse: collapse;
+        margin: 20px 0 26px;
+    }
+
+    .prose :global(th) {
+        font-family: var(--font-mono), monospace;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--color-faint);
+        text-align: left;
+        padding: 0 22px 9px 0;
+        border-bottom: 1px solid var(--color-border);
+        white-space: nowrap;
+    }
+
+    .prose :global(td) {
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--color-muted);
+        vertical-align: top;
+        padding: 10px 22px 10px 0;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .prose :global(tr > *:last-child) {
+        padding-right: 0;
+    }
+</style>

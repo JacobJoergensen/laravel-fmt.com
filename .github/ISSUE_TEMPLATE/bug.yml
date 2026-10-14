@@ -1,0 +1,48 @@
+name: Bug report
+description: Report something broken on laravel-fmt.com.
+labels: ["bug"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is for the website. If the package itself is misbehaving, report it on [laravel-fmt](https://github.com/jacobjoergensen/laravel-fmt/issues) instead.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Which page?
+      placeholder: "https://laravel-fmt.com/docs/cli"
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and operating system
+      placeholder: "Firefox 142 on Windows 11"
+    validations:
+      required: true
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Which theme were you in?
+      options:
+        - "Light"
+        - "Dark"
+        - "Both"
+        - "Not related to the theme"
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: A screenshot, a console error, or anything else worth knowing.
+    validations:
+      required: false

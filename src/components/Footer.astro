@@ -1,0 +1,87 @@
+---
+import Logo from "./Logo.astro";
+
+const authorUrl = "https://github.com/jacobjoergensen";
+const repoUrl = "https://github.com/jacobjoergensen/laravel-fmt";
+const licenseUrl = `${repoUrl}/blob/main/LICENSE.md`;
+
+const columns = [
+    {
+        heading: "Usage",
+        links: [
+            { label: "Getting started", href: "/docs/getting-started" },
+            { label: "CLI", href: "/docs/cli" },
+            { label: "Editors", href: "/docs/editors" },
+            { label: "Continuous integration", href: "/docs/continuous-integration" },
+        ],
+    },
+    {
+        heading: "Configuration",
+        links: [
+            { label: "Configuration", href: "/docs/configuration" },
+            { label: "Existing config files", href: "/docs/existing-config-files" },
+            { label: "Ignoring files", href: "/docs/ignoring-files" },
+            { label: "Tailwind", href: "/docs/tailwind" },
+        ],
+    },
+    {
+        heading: "Project",
+        links: [
+            { label: "GitHub", href: repoUrl },
+            { label: "X", href: "https://x.com/jacobjoergense1" },
+            { label: "Packagist", href: "https://packagist.org/packages/jacobjoergensen/laravel-fmt" },
+            { label: "Contributing", href: `${repoUrl}/blob/main/.github/CONTRIBUTING.md` },
+        ],
+    },
+];
+---
+
+<footer class="mx-auto max-w-280 px-7 pb-11 pt-24">
+    <div class="grid grid-cols-[1.5fr_1fr_1fr_1fr] gap-10 border-t border-border pt-11 max-[860px]:grid-cols-2 max-[560px]:grid-cols-1">
+        <div>
+            <div class="mb-3 flex items-center gap-2.5">
+                <Logo class="size-6 shrink-0" />
+                <span class="font-mono text-sm font-semibold tracking-[-0.3px]">laravel-fmt</span>
+            </div>
+            <p class="m-0 max-w-64 text-[13.5px] leading-[1.65] text-muted">
+                A code formatter for Laravel, written in Go. PHP, Blade and Livewire&nbsp;4, on PHP&nbsp;8.3+.
+            </p>
+        </div>
+
+        {
+            columns.map((col) => (
+                <div>
+                    <div class="mb-3.5 font-mono text-[10.5px] uppercase tracking-widest text-faint">{col.heading}</div>
+                    <ul class="m-0 flex list-none flex-col gap-2.5 p-0">
+                        {col.links.map((l) => (
+                            <li>
+                                <a href={l.href} class="text-[13.5px] text-muted no-underline transition-colors hover:text-text">
+                                    {l.label}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ))
+        }
+    </div>
+
+    <div class="mt-11 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6 font-mono text-[12.5px]">
+        <span class="text-muted">
+            laravel-fmt &middot; <a
+                href={licenseUrl}
+                target="_blank"
+                rel="noopener"
+                class="text-muted no-underline transition-colors hover:text-text">MIT</a
+            >
+        </span>
+        <span class="text-faint">
+            Created by&nbsp;<a
+                href={authorUrl}
+                target="_blank"
+                rel="noopener"
+                class="text-muted no-underline transition-colors hover:text-text">Jacob Jørgensen</a
+            >
+        </span>
+    </div>
+</footer>

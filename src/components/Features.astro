@@ -1,0 +1,54 @@
+---
+const code = "font-mono text-[13px] text-text";
+
+const features = [
+    {
+        label: "CONFIG",
+        title: "Reads your config",
+        body: `Settings from your Pint, PHP-CS-Fixer, Mago, EditorConfig, and Prettier files are adopted, so there is nothing to restate. Run <code class="${code}">init</code> when you want a file of your own.`,
+    },
+    {
+        label: "TAILWIND",
+        title: "Blade-aware sorting",
+        body: `In <code class="${code}">bg-{{ $color }}-500</code>, <code class="${code}">bg-</code> is only a class once Blade fills the hole. Laravel Fmt pins it and sorts around it.`,
+    },
+    {
+        label: "THEME",
+        title: "Reads your theme",
+        body: `The <code class="${code}">@theme</code> block in your stylesheet is loaded before anything is sorted, so <code class="${code}">bg-brand</code> lands with the built-in colors instead of first.`,
+    },
+    {
+        label: "ALPINE",
+        title: "Verified rewrites",
+        body: `Alpine attributes get canonical spacing. The result is read back token by token, and your original is kept if anything moved.`,
+    },
+    {
+        label: "LSP",
+        title: "Language Server",
+        body: `<code class="${code}">laravel-fmt lsp</code> speaks LSP over stdio for format on save and format selection. Editors that only pipe a buffer use <code class="${code}">--stdin-filepath</code>.`,
+    },
+    {
+        label: "PARALLEL",
+        title: "Parallel, in order",
+        body: `Every core takes a share of the files. Results come back in the order you passed them, so <code class="${code}">--check</code> prints the same lines every run.`,
+    },
+];
+---
+
+<h2 class="mb-7.5 mt-0 font-display text-[clamp(26px,3.4vw,36px)] font-semibold tracking-tight">
+    Features
+</h2>
+
+<div class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-3.5">
+    {
+        features.map((f) => (
+            <div class="rounded-xl border border-border bg-surface p-6.5 transition hover:border-border-strong hover:bg-surface2">
+                <div class="mb-3 font-mono text-[11px] tracking-[0.08em] text-cyan-soft">
+                    {f.label}
+                </div>
+                <h3 class="mb-2 mt-0 font-display text-lg font-semibold tracking-[-0.015em]">{f.title}</h3>
+                <p class="m-0 text-[14.5px] leading-[1.6] text-muted" set:html={f.body} />
+            </div>
+        ))
+    }
+</div>

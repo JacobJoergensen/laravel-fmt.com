@@ -1,0 +1,40 @@
+---
+title: What it formats
+description: The languages and files Laravel Fmt formats.
+group: Introduction
+order: 2
+---
+
+| Language   | Files             |
+| ---------- | ----------------- |
+| PHP        | `.php`            |
+| Blade      | `.blade.php`      |
+| Livewire 4 | `⚡*.blade.php`   |
+| HTML       | `.html`           |
+| CSS        | `.css`            |
+| Markdown   | `.md`             |
+| JSON       | `.json`, `.jsonc` |
+| YAML       | `.yml`, `.yaml`   |
+| XML        | `.xml`            |
+
+Other files are skipped. [Tailwind classes](/docs/tailwind) are sorted.
+
+## Livewire 4
+
+A `.blade.php` file whose opening `<?php` block defines a `new class` is a Livewire 4 single-file
+component.
+
+## Alpine.js
+
+Expressions in `x-data`, `x-init`, `x-show`, `x-text`, `x-html`, `x-model`, `x-modelable`,
+`x-effect`, `x-if`, `x-id`, `x-for`, `x-on:*`, `x-bind:*`, and `@*` get consistent spacing. The `:`
+shorthand is left alone.
+
+## `.dist` files
+
+A trailing `.dist` is ignored, so `phpunit.xml.dist` formats as XML.
+
+## What it does not do
+
+Laravel Fmt only formats. For linting and fixing code, use tools like [Pint](https://github.com/laravel/pint)
+or [PHPStan](https://github.com/phpstan/phpstan).

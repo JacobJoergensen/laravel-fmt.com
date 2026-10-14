@@ -1,0 +1,90 @@
+---
+import "../styles/global.css";
+import { Font } from "astro:assets";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+    title?: string;
+    description?: string;
+    image?: string;
+}
+
+const {
+    title = "Laravel Fmt · Code formatter for Laravel",
+    description = "A modern code formatter for Laravel, written in Go. Formats PHP, Blade, and Livewire 4 with Tailwind class sorting.",
+    image = "/og-image.png",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const socialImageURL = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+    <head>
+        <script is:inline>
+            try {
+                const stored = localStorage.getItem("theme");
+                const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+
+                document.documentElement.dataset.theme =
+                    stored ?? (prefersLight ? "light" : "dark");
+            } catch (e) {}
+        </script>
+
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonicalURL} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalURL} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={socialImageURL} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@jacobjoergense1" />
+        <meta name="twitter:creator" content="@jacobjoergense1" />
+
+        <Font cssVariable="--font-inter" preload />
+        <Font cssVariable="--font-space-grotesk" preload />
+        <Font cssVariable="--font-jetbrains-mono" />
+    </head>
+    <body class="min-h-screen overflow-x-hidden bg-bg font-sans text-text antialiased">
+        <a
+            href="#main"
+            class="sr-only focus:not-sr-only focus:fixed focus:left-7 focus:top-3 focus:z-50 focus:rounded-[9px] focus:bg-red focus:px-5 focus:py-2.5 focus:text-[14px] focus:font-semibold focus:text-white focus:no-underline"
+        >
+            Skip to content
+        </a>
+
+        <slot />
+        <Footer />
+
+        <script>
+            document.addEventListener("click", (e) => {
+                const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-copy-text]");
+
+                if (!btn || btn.dataset.copied !== undefined) {
+                    return;
+                }
+
+                navigator.clipboard?.writeText(btn.dataset.copyText ?? "").catch(() => {});
+
+                const status = btn.querySelector("[data-copy-status]") ?? btn;
+                const label = status.textContent;
+
+                status.textContent = "✓ Copied";
+                btn.dataset.copied = "";
+
+                setTimeout(() => {
+                    status.textContent = label;
+                    delete btn.dataset.copied;
+                }, 1500);
+            });
+        </script>
+    </body>
+</html>

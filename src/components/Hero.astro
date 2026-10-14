@@ -1,0 +1,71 @@
+---
+import GitHubIcon from "./icons/GitHubIcon.astro";
+
+interface Props {
+    version?: string | undefined;
+    stars?: number | undefined;
+}
+
+const { version, stars } = Astro.props;
+
+const installCommand = "composer require jacobjoergensen/laravel-fmt:@beta --dev";
+const repoUrl = "https://github.com/jacobjoergensen/laravel-fmt";
+---
+
+<div class="text-center">
+    {
+        version && (
+            <a
+                href="/docs/changelog"
+                class="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.25 font-mono text-[11.5px] text-muted no-underline transition hover:border-border-strong hover:text-text"
+            >
+                <span class="text-cyan-soft">v{version}</span>
+                Changelog &rarr;
+            </a>
+        )
+    }
+    <h1 class="mx-auto mb-6 mt-0 max-w-225 text-balance font-display text-[clamp(40px,6.4vw,74px)] font-semibold leading-[1.02] tracking-[-0.03em]">
+        A modern code formatter for <span class="text-red">Laravel</span>, written in <span class="text-cyan-soft">Go</span>.
+    </h1>
+
+    <p class="mx-auto mb-9 mt-0 max-w-155 text-pretty text-[18.5px] leading-[1.6] text-muted">
+        Formats PHP, Blade, and Livewire&nbsp;4 with Tailwind class sorting. No Node.
+        No Prettier plugin. Just PHP&nbsp;8.3+.
+    </p>
+
+    <div class="mb-6.5 flex flex-wrap justify-center gap-3">
+        <a
+            href="/docs/getting-started"
+            class="inline-flex items-center gap-2 rounded-[9px] bg-red px-6 py-3.25 text-[15px] font-semibold text-white no-underline shadow-[0_8px_22px_-10px_rgba(255,45,32,0.5)] transition hover:bg-red-press active:translate-y-px"
+        >
+            Get started <span class="text-base">&rarr;</span>
+        </a>
+        <a
+            href={repoUrl}
+            class="inline-flex items-center gap-2.25 rounded-[9px] border border-border-strong px-5 py-3.25 text-[15px] font-medium text-text no-underline transition hover:bg-surface"
+        >
+            <GitHubIcon size={16} /> GitHub
+            {
+                stars !== undefined && (
+                    <span class="border-l border-border-strong pl-2.25 font-mono text-[13px] text-muted">
+                        &#9733; {stars.toLocaleString("en-US")}
+                    </span>
+                )
+            }
+        </a>
+    </div>
+
+    <div class="mx-auto flex w-fit items-center gap-3 rounded-[9px] border border-border bg-surface px-3.5 py-3 text-left font-mono text-[13px]">
+        <span class="min-w-0 truncate text-text">
+            <span class="text-red" aria-hidden="true">$</span>
+            {installCommand}
+        </span>
+        <button
+            type="button"
+            class="inline-flex shrink-0 cursor-pointer items-center gap-1.25 rounded-md border border-border bg-transparent px-2.5 py-1.25 font-mono text-[11.5px] text-muted transition hover:border-border-strong hover:text-text"
+            data-copy-text={installCommand}
+        >
+            Copy
+        </button>
+    </div>
+</div>

@@ -1,0 +1,90 @@
+---
+title: Continuous integration
+description: Fail the build on unformatted code, with inline annotations and a job summary on GitHub Actions.
+group: Workflow
+order: 31
+---
+
+Run `--check` in CI. It fails the build on unformatted code.
+
+```sh
+vendor/bin/laravel-fmt --check
+```
+
+To check only what a branch changed, add `--since`:
+
+```sh
+vendor/bin/laravel-fmt --check --since origin/main
+```
+
+`--since` needs the full git history. On GitHub Actions, set `fetch-depth: 0` on `actions/checkout`.
+
+## GitHub Actions
+
+```yaml title=".github/workflows/format.yml"
+name: format
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  laravel-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+      - uses: ramsey/composer-install@v4
+      - run: vendor/bin/laravel-fmt --check
+```
+
+On GitHub Actions, each unformatted file and each parse error gets an annotation. The job summary
+lists every unformatted file and every failure.
+
+## GitLab CI
+
+```yaml title=".gitlab-ci.yml"
+image: php:8.4-cli
+
+laravel-fmt:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  cache:
+    key:
+      files:
+        - composer.lock
+    paths:
+      - vendor/
+  before_script:
+    - apt-get update && apt-get install -y git unzip
+    - curl -sS https://getcomposer.org/download/latest-stable/composer.phar -o /usr/local/bin/composer
+    - chmod +x /usr/local/bin/composer
+  script:
+    - composer install --no-interaction --no-progress
+    - vendor/bin/laravel-fmt --check
+```
+
+GitLab gets no annotations or summary. The job log lists each unformatted file.
+
+## Windows runners
+
+With `core.autocrlf` on, Git checks files out with CRLF and every file looks unformatted. Add this to
+`.gitattributes`:
+
+```text title=".gitattributes"
+* text=auto eol=lf
+```
+
+If your project uses CRLF, set `"endOfLine": "crlf"` in `laravel-fmt.json` instead.
+
+## Showing the changes
+
+`--diff` prints the changes instead of file names. Use `--check` on GitHub Actions for annotations.
+
+```sh
+vendor/bin/laravel-fmt --diff
+```

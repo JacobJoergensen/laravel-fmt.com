@@ -1,0 +1,75 @@
+---
+title: Ignoring files
+description: How Laravel Fmt decides which files to skip, using .gitignore and the ignore key.
+group: Configuration
+order: 23
+---
+
+Laravel Fmt skips what your `.gitignore` files ignore, then applies the `ignore` list in
+`laravel-fmt.json`. The last matching pattern wins, so a `!` in `ignore` overrides `.gitignore`.
+
+```json title="laravel-fmt.json"
+{
+  "ignore": [
+    "database/data/**",
+    "!database/data/countries.json"
+  ]
+}
+```
+
+An ignored folder is skipped whole, so `!` cannot bring back a file inside it.
+
+`.prettierignore` and the `exclude`, `notName`, and `notPath` lists in `pint.json` are read too. If
+Oxfmt or Vite+ formats your frontend, CSS, HTML, Markdown, JSON, and YAML files are skipped.
+
+## Defaults
+
+Your `ignore` entries are added to this list. To format something it ignores, add a `!` pattern such
+as `"!package-lock.json"`.
+
+```json title="Default ignore"
+[
+  "vendor/",
+  "node_modules/",
+  "storage/**",
+  "bootstrap/cache/**",
+  "composer.lock",
+  "package-lock.json",
+  "pnpm-lock.yaml",
+  "yarn.lock",
+  "_ide_helper*.php"
+]
+```
+
+## Hidden files
+
+Files and folders starting with a dot are skipped unless you name them.
+
+## Named files
+
+A file you name on the command line is formatted even if it is ignored. A folder or glob you name
+still follows the ignore rules.
+
+```sh
+vendor/bin/laravel-fmt vendor/acme/pkg/src/Thing.php
+```
+
+## Ignoring code
+
+A `laravel-fmt-ignore` comment keeps the next statement or element as written. The comment must sit
+directly above it. `laravel-fmt-ignore: reason` works too.
+
+```php
+// laravel-fmt-ignore
+$matrix = [
+    [1,  0, 0],
+    [0, 10, 0],
+];
+```
+
+```blade
+{{-- laravel-fmt-ignore --}}
+<p   class="text-sm   p-4">Kept as written</p>
+```
+
+It works in PHP, Blade, HTML, CSS, Markdown, XML, and YAML, using each language's own comments.
