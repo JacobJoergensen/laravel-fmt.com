@@ -148,6 +148,22 @@ indented like `@if`.
 | `close`    | no       | The closing directive. Defaults to `end` + open |
 | `branches` | no       | Directives inside the block, like `@else`       |
 
+`blade.blankLineBeforeDirectives` puts a blank line before the block directives you list, named
+without `@`. It is empty by default. A block that comes first inside an element or another block
+gets no blank line. A comment right above a block keeps its place, and the blank line goes above
+the comment.
+
+```json title="laravel-fmt.json"
+{
+  "blade": {
+    "blankLineBeforeDirectives": ["if", "foreach", "php"]
+  }
+}
+```
+
+It accepts Blade's own block directives, `php` for `@php` blocks, and any `open` from
+`blockDirectives`. Anything else stops the run.
+
 ## Precedence
 
 `laravel-fmt.json` always wins. Settings from [existing config files](/docs/existing-config-files) fill in
