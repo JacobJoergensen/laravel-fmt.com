@@ -1,6 +1,6 @@
 ---
 title: Continuous integration
-description: Fail the build on unformatted code, with inline annotations and a job summary on GitHub Actions.
+description: Fail the build on unformatted code, with annotations on GitHub Actions and Code Quality reports on GitLab.
 group: Workflow
 order: 31
 ---
@@ -65,10 +65,15 @@ laravel-fmt:
     - chmod +x /usr/local/bin/composer
   script:
     - composer install --no-interaction --no-progress
-    - vendor/bin/laravel-fmt --check
+    - vendor/bin/laravel-fmt --check --reporter gitlab > gl-code-quality-report.json
+  artifacts:
+    when: always
+    reports:
+      codequality: gl-code-quality-report.json
 ```
 
-GitLab gets no annotations or summary. The job log lists each unformatted file.
+On GitLab, each unformatted file and each parse error shows up in the merge request's Code Quality
+report.
 
 ## Windows runners
 

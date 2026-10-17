@@ -30,6 +30,15 @@ List the files that would change. Writes nothing.
 vendor/bin/laravel-fmt --check
 ```
 
+## `--reporter`
+
+Write a report to stdout for CI. Requires `--check`. `gitlab` writes a GitLab Code Quality report.
+See [Continuous integration](/docs/continuous-integration#gitlab-ci).
+
+```sh
+vendor/bin/laravel-fmt --check --reporter gitlab > gl-code-quality-report.json
+```
+
 ## `--diff`
 
 Show the changes as a diff. Writes nothing.
@@ -103,6 +112,7 @@ These are rejected:
 - `--since` with `--stdin-filepath` or paths
 - `--stdin-filepath` with `--check`, `--diff`, or paths
 - `--show-config` with anything that formats
+- `--reporter` with `--diff`
 
 ## `init`
 
