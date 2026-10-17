@@ -14,9 +14,9 @@
         "node": ">=24.18.0"
     },
     "dependencies": {
-        "@astrojs/mdx": "^8.0.3",
+        "@astrojs/mdx": "^8.1.0",
         "@astrojs/sitemap": "^3.7.4",
-        "astro": "^7.3.8"
+        "astro": "^7.4.0"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.3.3",
@@ -26,6 +26,6 @@
         "pagefind": "^1.5.2",
         "tailwindcss": "^4.3.3",
         "typescript": "^7.0.2",
-        "wrangler": "^4.151.0"
+        "wrangler": "^4.151.1"
     }
 }
