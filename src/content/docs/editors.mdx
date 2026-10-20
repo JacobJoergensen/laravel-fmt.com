@@ -17,7 +17,11 @@ import Callout from "../../components/docs/Callout.astro";
 vendor/bin/laravel-fmt lsp
 ```
 
-It formats documents and selections over stdio.
+It formats documents and selections over stdio, with the same config and
+[ignored files](/docs/ignoring-files) as the CLI. A broken config shows up as a message in the editor.
+
+Editor plugins can ask for a file's [`endOfLine`](/docs/configuration#top-level-keys) with a
+`laravel-fmt/endOfLine` request.
 
 ## Piping a buffer
 
