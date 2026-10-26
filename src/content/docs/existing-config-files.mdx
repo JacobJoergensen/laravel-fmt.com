@@ -32,7 +32,9 @@ Sections apply per file. The search stops at `root = true`.
 
 ## Prettier
 
-Read from the `prettier` key in `package.json` or `.prettierrc` (JSON or YAML).
+Read from the first one found, in Prettier's order: the `prettier` key in `package.json`,
+`.prettierrc` (JSON or YAML), `.prettierrc.json`, `.prettierrc.yml`, `.prettierrc.yaml`, or
+`.prettierrc.toml`.
 
 | Prettier option      | Laravel Fmt key                   |
 | -------------------- | --------------------------------- |
@@ -47,7 +49,8 @@ Read from the `prettier` key in `package.json` or `.prettierrc` (JSON or YAML).
 `overrides` apply per file. Prettier settings reach PHP only with `@prettier/plugin-php` in
 `plugins`, Blade only with a Blade plugin, and XML only with `@prettier/plugin-xml`.
 
-JavaScript, TypeScript, JSON5, and TOML Prettier configs are not read.
+JavaScript, TypeScript, and JSON5 Prettier configs are not read. If one is found first, no Prettier
+settings apply and Laravel Fmt prints a warning.
 
 ## Pint and PHP-CS-Fixer
 

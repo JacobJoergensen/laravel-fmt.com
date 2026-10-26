@@ -77,7 +77,8 @@ Skip `laravel-fmt.json`. Settings from your [existing config files](/docs/existi
 
 ## `--show-config`
 
-Print the config used for a file as JSON. Formats nothing.
+Print the config used for a file as JSON. Formats nothing. Stderr shows which config file each
+layout setting comes from, and whether the file is ignored.
 
 ```sh
 vendor/bin/laravel-fmt --show-config app/Models/User.php
