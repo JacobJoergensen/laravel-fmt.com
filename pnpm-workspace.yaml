@@ -42,3 +42,5 @@ minimumReleaseAgeExclude:
   - '@oxlint/binding-win32-x64-msvc@1.88.0'
   - oxfmt@0.73.0
   - oxlint@1.88.0
+overrides:
+  undici@>=7.0.0 <7.30.1: ^7.30.1
