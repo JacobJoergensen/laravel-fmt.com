@@ -13,7 +13,7 @@ Later sources override earlier ones:
 2. Prettier config
 3. `.php-cs-fixer.php`, or `.php-cs-fixer.dist.php`
 4. `pint.json`
-5. `mago.toml`
+5. Mago config
 
 `laravel-fmt.json` overrides all five. In a Laravel app, Pint, PHP-CS-Fixer, and Mago files are read
 from the app root only.
@@ -32,9 +32,9 @@ Sections apply per file. The search stops at `root = true`.
 
 ## Prettier
 
-Read from the first one found, in Prettier's order: the `prettier` key in `package.json`,
-`.prettierrc` (JSON or YAML), `.prettierrc.json`, `.prettierrc.yml`, `.prettierrc.yaml`, or
-`.prettierrc.toml`.
+Read from the first one found, in Prettier's order: the `prettier` key in `package.json` or
+`package.yaml`, `.prettierrc` (JSON or YAML), `.prettierrc.json`, `.prettierrc.yml`,
+`.prettierrc.yaml`, or `.prettierrc.toml`.
 
 | Prettier option      | Laravel Fmt key                   |
 | -------------------- | --------------------------------- |
@@ -55,7 +55,8 @@ settings apply and Laravel Fmt prints a warning.
 ## Pint and PHP-CS-Fixer
 
 Pint's `preset` (`laravel`, `psr12`, `symfony`, `per`) is applied first, then your `rules`. No preset
-means `laravel`. Without `pint.json`, requiring `laravel/pint` in `composer.json` counts as Pint.
+means `laravel`. Rules and excludes from a config named in `extend` are used too. Without
+`pint.json`, requiring `laravel/pint` in `composer.json` counts as Pint.
 
 When Pint is detected, PHP files use 4 spaces and LF.
 
@@ -82,9 +83,10 @@ executed. Only a literal `setRules([...])` array is read.
 
 ## Mago
 
-Read from the `[formatter]` table in `mago.toml`. The `preset` (`psr-12`, `laravel`, `drupal`) is
-applied first, then your keys. No preset means Mago's own defaults, and every key below is set, not
-only the ones you write.
+Read from the `formatter` settings in `mago.toml`, `mago.yaml`, `mago.yml`, `mago.json`, or a
+`mago.dist.*` file. Settings from a config named in `extends` are used too. The `preset` (`psr-12`,
+`laravel`, `drupal`) is applied first, then your keys. No preset means Mago's own defaults, and every
+key below is set, not only the ones you write.
 
 | Mago key                                                                                     | Laravel Fmt key                                           |
 | -------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
