@@ -30,10 +30,16 @@ Expressions in `x-data`, `x-init`, `x-show`, `x-text`, `x-html`, `x-model`, `x-m
 `x-effect`, `x-if`, `x-id`, `x-for`, `x-on:*`, `x-bind:*`, and `@*` get consistent spacing. The `:`
 shorthand is left alone. `!` follows [`php.notOperatorSpace`](/docs/configuration#spacing).
 
+## JSON in `<script>`
+
+A `<script>` with type `application/ld+json`, `application/json`, `importmap`, or
+`speculationrules` formats as JSON.
+
 ## Markdown code blocks
 
-PHP, Blade, HTML, CSS, JSON, YAML, and XML code blocks are formatted. PHP snippets don't need
-`<?php`. A block that doesn't parse is kept as written.
+PHP, Blade, HTML, CSS, JSON, YAML, and XML code blocks are formatted. A block tagged with a full
+extension such as `blade.php` formats like a file with that extension. PHP snippets don't need `<?php`. A block that
+doesn't parse is kept as written.
 
 ## `.dist` files
 
