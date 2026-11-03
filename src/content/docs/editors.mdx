@@ -21,7 +21,8 @@ It formats documents and selections over stdio, with the same config and
 [ignored files](/docs/ignoring-files) as the CLI. A broken config shows up as a message in the editor.
 
 Editor plugins can ask for a file's [`endOfLine`](/docs/configuration#top-level-keys) with a
-`laravel-fmt/endOfLine` request.
+`laravel-fmt/endOfLine` request. A `laravel-fmt/format` request formats the `text` it is sent, or a
+`range` of it, and returns the edits and the file's `endOfLine`.
 
 ## Piping a buffer
 

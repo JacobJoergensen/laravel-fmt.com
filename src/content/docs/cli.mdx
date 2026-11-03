@@ -20,7 +20,8 @@ vendor/bin/laravel-fmt app resources/views
 vendor/bin/laravel-fmt "resources/**/*.blade.php"
 ```
 
-Quote globs so they work the same on every platform. A glob that matches nothing is an error.
+Quote globs so they work the same on every platform. A glob that matches nothing is an error. A file
+or folder that exists is never read as a glob, so a Folio `[id].blade.php` works.
 
 ## `--check`
 
