@@ -35,6 +35,12 @@ Expressions in `x-data`, `x-init`, `x-show`, `x-text`, `x-html`, `x-model`, `x-m
 A `<script>` with type `application/ld+json`, `application/json`, `importmap`, or
 `speculationrules` formats as JSON.
 
+## JSONC
+
+`tsconfig.json`, `jsconfig.json`, `devcontainer.json`, `.devcontainer.json`, and `.vscode/*.json`
+format like `.jsonc`, as do variants like `tsconfig.app.json`. Comments are kept, and so is a
+trailing comma in a multi-line list.
+
 ## Markdown code blocks
 
 PHP, Blade, HTML, CSS, JSON, YAML, and XML code blocks are formatted. A block tagged with a full

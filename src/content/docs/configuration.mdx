@@ -167,4 +167,5 @@ It accepts Blade's own block directives, `php` for `@php` blocks, and any `open`
 ## Precedence
 
 `laravel-fmt.json` always wins. Settings from [existing config files](/docs/existing-config-files) fill in
-the keys you leave out. Unknown keys and bad values stop the run.
+the keys you leave out. Unknown or duplicate keys, bad values, `null`, and invalid UTF-8 stop the
+run, and a bad value's error names its key. Keys are case-sensitive, so `PrintWidth` is unknown.

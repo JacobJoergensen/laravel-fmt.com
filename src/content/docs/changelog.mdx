@@ -5,6 +5,43 @@ group: Reference
 order: 100
 ---
 
+## Version 0.10.0 (2026-11-10)
+
+- Improved `laravel-fmt.json` to reject duplicate keys, wrong-case keys like `PrintWidth`, `null` and invalid UTF-8
+- Improved the error for a wrong value in `laravel-fmt.json`, `pint.json` or `mago.json` to name its key, like `preset must be a string`
+- Improved `devcontainer.json` and `.vscode/*.json` to be formatted as JSONC
+- Improved JSONC to keep a trailing comma in a multi-line list
+- Fixed `pint.json`, `composer.json`, `package.json` and `mago.json` keys matching in any case, like `"Preset"` for `preset`
+- Fixed JSON that is not UTF-8 being formatted instead of reported
+- Fixed a flat JSON array or object before a comma going one column past `printWidth`
+- Fixed JSONC comments around a comma swapping places
+- Fixed invalid YAML like `branches: [main]tags: [v1]`, `-\tname: x` or `--- a: b` being reshaped instead of reported
+- Fixed YAML block scalar lines holding only tabs or spaces being removed
+- Fixed XML attributes with spaces around `=` being reported as invalid
+- Fixed XML text gaining indent after `laravel-fmt-ignore` or before a close tag
+- Fixed invalid XML like `<a b="1"c="2"/>` or a bare `&` being formatted instead of reported
+- Fixed Markdown lines like `<a name="x"></a>`, `<A`, or `    - e` under a list item being read as an HTML block or list
+- Fixed a backslash added to a Markdown line inside a code span or HTML tag, or before `***`, changing the text
+- Fixed a Markdown table header cell holding only `-` turning into a second delimiter row
+- Fixed Markdown code and HTML in list items and quotes losing blank lines, tabs or indent
+- Fixed Markdown link definitions like `[a]: <b>(c)` or `[a]: b (()`, or the line under one, changing meaning
+- Fixed Markdown headings, code block info strings and link labels losing a no-break space at their edge
+- Fixed Markdown with CR-only line endings losing the blank line between link definitions
+- Fixed a YAML `|+` code block in Markdown losing a trailing blank line on each run
+- Fixed Pint's `per`, `psr12` and `symfony` presets, rule sets like `@PER-CS` and the order of `pint.json` rules not matching Pint
+- Fixed a Pint rule set to `true` or only partly configured keeping the preset's options
+- Fixed `ordered_imports` with `sort_algorithm: none` still sorting imports
+- Fixed laravel-fmt and Pint's `psr12` and `symfony` presets undoing each other's empty bodies and `new class ()`
+- Fixed `pint.json` with `"rules": []` being rejected and an unknown preset being accepted
+- Fixed `.prettierrc.json` being read as YAML and a byte order mark in `.prettierrc` dropping the first option
+- Fixed Prettier options like `"tabWidth": "4"` being misread or ignored instead of reported
+- Fixed an empty `"prettier"` key in `package.json` hiding `.prettierrc`, and a shared config in `.prettierrc` being reported as invalid
+- Fixed Prettier `overrides` globs like `./src/*.php` or `!*.md` matching other files than Prettier does
+- Fixed Mago values like `same_line`, `Crlf`, `"preserve"` or the `pint` preset being ignored or refused
+- Fixed Mago's `tempest` and `hack` presets missing and its `inline-empty-*-braces` settings being ignored
+- Fixed Mago settings that Mago itself rejects being accepted
+- Fixed a `mago.toml` without a `[formatter]` table letting a parent folder's Mago config apply
+
 ## Version 0.9.0 (2026-11-07)
 
 - Updated Tailwind to 4.3.5

@@ -16,7 +16,8 @@ Later sources override earlier ones:
 5. Mago config
 
 `laravel-fmt.json` overrides all five. In a Laravel app, Pint, PHP-CS-Fixer, and Mago files are read
-from the app root only.
+from the app root only. A bad value in a Prettier, Pint, or Mago config stops the run, and the error
+names the key.
 
 ## EditorConfig
 
@@ -55,7 +56,8 @@ settings apply and Laravel Fmt prints a warning.
 ## Pint and PHP-CS-Fixer
 
 Pint's `preset` (`laravel`, `psr12`, `symfony`, `per`) is applied first, then your `rules`. No preset
-means `laravel`. Rules and excludes from a config named in `extend` are used too. Without
+means `laravel`. Rule sets like `@PER-CS` in `rules` are applied too, as are rules and excludes from
+a config named in `extend`. Without
 `pint.json`, requiring `laravel/pint` in `composer.json` counts as Pint.
 
 When Pint is detected, PHP files use 4 spaces and LF.
@@ -84,9 +86,10 @@ executed. Only a literal `setRules([...])` array is read.
 ## Mago
 
 Read from the `formatter` settings in `mago.toml`, `mago.yaml`, `mago.yml`, `mago.json`, or a
-`mago.dist.*` file. Settings from a config named in `extends` are used too. The `preset` (`psr-12`,
-`laravel`, `drupal`) is applied first, then your keys. No preset means Mago's own defaults, and every
-key below is set, not only the ones you write.
+`mago.dist.*` file. Settings from a config named in `extends` are used too. The `preset` (`default`,
+`psr-12`, `pint`, `tempest`, `hack`, `drupal`) is applied first, then your keys. No preset means
+Mago's own defaults, and every key below is set, not only the ones you write. A Mago config without
+a `formatter` table still stops the search, so a parent folder's config doesn't apply.
 
 | Mago key                                                                                     | Laravel Fmt key                                           |
 | -------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
@@ -104,6 +107,8 @@ key below is set, not only the ones you write.
 | `expand-use-groups`                                                                          | `php.expandUseGroups`                                     |
 
 `print-width`, `tab-width`, `use-tabs`, and `end-of-line` apply to every file, not only PHP.
+`inline-empty-*-braces` decide whether empty bodies stay on one line, and have no `laravel-fmt.json`
+key.
 
 ## Overriding a detected value
 
