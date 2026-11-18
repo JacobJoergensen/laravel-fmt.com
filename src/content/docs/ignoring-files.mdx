@@ -37,13 +37,27 @@ as `"!package-lock.json"`.
   "package-lock.json",
   "pnpm-lock.yaml",
   "yarn.lock",
-  "_ide_helper*.php"
+  "_ide_helper*.php",
+  ".phpstorm.meta.php",
+  ".idea/",
+  ".claude/worktrees/",
+  ".agents/skills/",
+  ".claude/skills/",
+  ".cursor/skills/",
+  ".factory/skills/",
+  ".github/skills/",
+  ".grok/skills/",
+  ".junie/skills/",
+  ".kiro/skills/",
+  ".pi/skills/",
+  ".vite/"
 ]
 ```
 
 ## Hidden files
 
-Files and folders starting with a dot are skipped unless you name them.
+Files and folders starting with a dot, like `.github/workflows`, are formatted like any other.
+`.git`, `.hg`, `.jj`, `.sl`, and `.svn` are always skipped.
 
 ## Named files
 
