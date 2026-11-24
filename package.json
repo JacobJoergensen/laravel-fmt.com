@@ -1,7 +1,7 @@
 {
     "name": "laravel-fmt-website",
     "type": "module",
-    "packageManager": "pnpm@12.21.0",
+    "packageManager": "pnpm@12.23.0",
     "scripts": {
         "dev": "astro dev",
         "build": "astro build && pagefind --site dist",
@@ -15,17 +15,17 @@
     },
     "dependencies": {
         "@astrojs/mdx": "^8.1.6",
-        "@astrojs/sitemap": "^3.7.5",
-        "astro": "^7.4.12"
+        "@astrojs/sitemap": "^3.7.6",
+        "astro": "^7.4.13"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.3.5",
-        "oxfmt": "^0.79.0",
-        "oxlint": "^1.94.0",
-        "oxlint-tsgolint": "^7.0.2007",
+        "oxfmt": "^0.80.0",
+        "oxlint": "^1.95.0",
+        "oxlint-tsgolint": "^7.0.2008",
         "pagefind": "^1.6.0",
         "tailwindcss": "^4.3.5",
         "typescript": "^7.0.2",
-        "wrangler": "^4.164.0"
+        "wrangler": "^4.167.0"
     }
 }
