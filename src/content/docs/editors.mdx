@@ -22,7 +22,8 @@ It formats documents and selections over stdio, with the same config and
 
 Editor plugins can ask for a file's [`endOfLine`](/docs/configuration#top-level-keys) with a
 `laravel-fmt/endOfLine` request. A `laravel-fmt/format` request formats the `text` it is sent, or a
-`range` of it, and returns the edits and the file's `endOfLine`.
+`range` of it, and returns the edits and the file's `endOfLine`, plus `formattedElsewhere` for a file
+[another tool formats](/docs/ignoring-files).
 
 ## Piping a buffer
 

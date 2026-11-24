@@ -19,8 +19,9 @@ Laravel Fmt skips what your `.gitignore` files ignore, then applies the `ignore`
 
 An ignored folder is skipped whole, so `!` cannot bring back a file inside it.
 
-`.prettierignore` and the `exclude`, `notName`, and `notPath` lists in `pint.json` are read too. If
-Oxfmt or Vite+ formats your frontend, CSS, HTML, Markdown, JSON, and YAML files are skipped.
+`.prettierignore` and the `exclude`, `notName`, and `notPath` lists in `pint.json` are read too. In a
+monorepo, the root's files apply inside a package with its own `composer.json` too. If Oxfmt or
+Vite+ formats your frontend, CSS, HTML, Markdown, JSON, and YAML files are skipped.
 
 ## Defaults
 

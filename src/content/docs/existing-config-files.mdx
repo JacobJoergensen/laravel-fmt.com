@@ -76,6 +76,9 @@ When Pint is detected, PHP files use 4 spaces and LF.
 | `array_syntax`                               | `php.shortArray`                         |
 | `heredoc_indentation`                        | `php.heredocIndentation`                 |
 
+`types_spaces` is read too, for the spaces around `|` in types like `int | string`. It has no
+`laravel-fmt.json` key.
+
 The `blank_line_before_statement` option of Pint's `Pint/laravel_blade` rule sets
 `blade.blankLineBeforeDirectives`. Only `if`, `foreach`, `forelse`, `for`, `while`, `switch`, and
 `php` are read.

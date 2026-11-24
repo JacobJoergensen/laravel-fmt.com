@@ -73,11 +73,13 @@ ignored with a warning. Outside Laravel, the nearest `laravel-fmt.json` above th
 | `indentStyle`         | `"space"`    | `"space"`, `"tab"`                                                                       |
 | `indentWidth`         | `4`          | Any integer `>= 1`                                                                       |
 | `endOfLine`           | `"lf"`       | `"lf"`, `"crlf"`, `"auto"`. `auto` follows the file's first line ending                  |
-| `quoteStyle`          | `"auto"`     | `"auto"`, `"single"`, `"double"`. `auto` is single in PHP, double in CSS/HTML/XML        |
+| `quoteStyle`          | `"auto"`     | `"auto"`, `"single"`, `"double"`. `auto` is single in PHP, double in CSS                 |
 | `php`                 | see below    | See [PHP options](#php-options).                                                         |
 | `blade`               | none         | See [Blade options](#blade-options).                                                     |
 | `markdown.proseWrap`  | `"preserve"` | `"always"`, `"never"`, `"preserve"`                                                      |
 | `tailwind.stylesheet` | unset        | A path or list of paths to your Tailwind v4 stylesheets. See [Tailwind](/docs/tailwind). |
+
+`quoteStyle` does not touch HTML, Blade, or XML attributes.
 
 JSON and YAML always use spaces. They indent 2, or 4 for `composer.json`, unless `indentWidth` is set
 in `laravel-fmt.json`, `.editorconfig`, or Prettier.
@@ -132,7 +134,7 @@ in `laravel-fmt.json`, `.editorconfig`, or Prettier.
 ## Blade options
 
 `blade.blockDirectives` declares your own block directives, such as a `Blade::if`. Their bodies are
-indented like `@if`.
+indented like `@if`. Pennant's `@feature` and `@featureany` are built in and need no entry.
 
 ```json title="laravel-fmt.json"
 {
