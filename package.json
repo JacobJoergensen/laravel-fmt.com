@@ -22,10 +22,10 @@
         "@tailwindcss/vite": "^4.3.5",
         "oxfmt": "^0.80.0",
         "oxlint": "^1.95.0",
-        "oxlint-tsgolint": "^7.0.2008",
+        "oxlint-tsgolint": "^7.0.2009",
         "pagefind": "^1.6.0",
         "tailwindcss": "^4.3.5",
         "typescript": "^7.0.2",
-        "wrangler": "^4.167.0"
+        "wrangler": "^4.168.0"
     }
 }
